@@ -4,7 +4,7 @@ import { data } from "react-router-dom";
 
 export async function CreateStudentProfile(user) {
   const studentRef = doc(db, "student", user.uid);
-
+ 
   await setDoc(studentRef, {
     fullName: user.displayName,
     email: user.email,

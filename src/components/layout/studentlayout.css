@@ -1,5 +1,5 @@
 .student-layout{
-    min-height: 100vh;
+    min-height: 10vh;
 }
 
 .main-content{
@@ -10,4 +10,4 @@
     .main-content{
         margin-left: 0;
     }
-}
+} 

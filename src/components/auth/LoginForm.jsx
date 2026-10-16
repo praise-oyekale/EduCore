@@ -1,10 +1,11 @@
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import Input from "../common/Input";
 import "../auth/loginform.css";
 import {  LoginAuth } from "../../services/authService";
 import Loader from "../common/Loader";
 import { Alert } from "../common/Alert";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function LoginForm() {
 
@@ -16,6 +17,20 @@ function LoginForm() {
   const [passwordError, setPasswordError] = useState("");
   const [authError, setAuthError] = useState("")
   const [loading, setLoading] = useState(false)
+  const {user, role } = useAuth();
+  // const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && role) {
+      if (role === "admin") {
+        navigate("/admin");
+      }else if (role === "teacher"){
+        navigate("/teacher");
+      }else {
+        navigate("/student");
+      }
+    }
+  },[user, role, navigate]);
 
   function validateEmail(email) {
     if (!email.trim()) {
@@ -45,7 +60,8 @@ function LoginForm() {
 
         const user = await LoginAuth(email, password);
 
-        console.log("Logged in:", user)
+        console.log("Logged in:", user);
+        
     } catch (error) {
         setAuthError(error.message)
     } finally {
@@ -64,7 +80,7 @@ function LoginForm() {
     setEmail("")
     setPassword("")
 
-    navigate("/student")
+    // navigate("/student")
   }
   return (
     <>

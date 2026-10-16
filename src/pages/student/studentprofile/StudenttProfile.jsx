@@ -3,8 +3,9 @@ import "../studentprofile/studentprofile.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { getStudentProfile } from "../../../services/studentService";
-import Input from "../../../components/common/Input";
+// import Input from "../../../components/common/Input";
 import EditProfileModel from "./EditProfileModal";
+import { academicSummary } from "../../../data/academicSummary";
 export default function StudentProfile() {
   const [student, setStudent] = useState(null);
   const { user } = useAuth();
@@ -386,7 +387,39 @@ export default function StudentProfile() {
             )}
           </div>
 
-          <div></div>
+          <div className="student-academicsummary">
+            <div>
+              <h2 style={{ fontSize: "17px" }}>Academic Summary</h2>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  borderBottom: "1px solid #ddd",
+                  padding: "12px 0",
+                  fontWeight: "600",
+                }}
+              >
+                <span style={{ color: "#B3A2B3" }}>Field</span>
+                <span style={{ color: "#B3A2B3" }}>Detail</span>
+              </div>
+
+              {academicSummary.map((item) => (
+                <div
+                  key={item.label}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    padding: "12px 0",
+                    borderBottom: "1px solid #eee",
+                  }}
+                >
+                  <span style={{ color: "#B3A2B3" }}>{item.label}</span>
+                  <span>{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>

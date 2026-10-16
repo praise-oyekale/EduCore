@@ -8,7 +8,7 @@ export default function Dashboardnavbar({ user, setSidebarOpen }) {
     <nav className="dashboard-navbar">
       <div className="nav-harmburger" onClick={()=> setSidebarOpen(true)}>
         <FaBars />
-      </div>
+      </div> 
       <div className="nav-left-contents">
         <div className="dashboardnav-messages"> <FaComment/> </div>
         <div className="dashboardnav-notification"><FaBell/> </div>

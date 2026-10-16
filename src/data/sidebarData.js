@@ -95,3 +95,133 @@ export const StudentSidebar = [
     ],
   },
 ];
+
+
+
+export const TeacherSidebar = [
+  {
+    title: "MAIN",
+    items: [
+      {
+        // icon: MdDashboard,
+        label: "Overview",
+        path: "/teacher",
+      },
+       {
+        // icon: FaUser,
+        label: "Profile",
+        path: "/teacher/profile",
+      },
+    ],
+  },
+
+  {
+    title: "TEACHING",
+    items: [
+      {
+        label: 'My Classes',
+        path: "/teacher/classes"
+      },
+      {
+        label: 'Students',
+        path: "/teacher/myStudents"
+      },
+      {
+        label: 'Subjects',
+        path: "/teacher/subject"
+      },
+      {
+        label: 'Attendance',
+        path: "/teacher/attendance"
+      },
+      {
+        label: 'Results/ Grades',
+        path: "/teacher/grades"
+      },
+      {
+        label: 'Assignments',
+        path: "/teacher/assignment"
+      },
+      {
+        label: 'Assignment Submissions',
+        path: "/teacher/assSubmission"
+      },
+      {
+        label: 'Timetable',
+        path: "/teacher/timetable"
+      },
+      {
+        label: 'Teaching Resourses',
+        path: "/teacher/teachingResources"
+      },
+
+
+    ]
+  }
+]
+
+
+export const AdminSidebar = [
+  {
+    title: "MAIN",
+    items: [
+      {
+        // icon: MdDashboard,
+        label: "Overview",
+        path: "/admin",
+      },
+       {
+        // icon: FaUser,
+        label: "Profile",
+        path: "/admin/profile",
+      },
+    ],
+  },
+
+  {
+    title: "PEOPLE",
+    items: [
+      {
+        label: 'Students',
+        path: "/teacher/classes"
+      },
+      {
+        label: 'Teachers & Staffs',
+        path: "/admin/staffs"
+      },
+
+
+    ]
+
+  },
+
+  {
+    title: "ACADEMICS",
+    items: [
+      {
+        label: 'Classes & Sections',
+        path: "/admin/classes"
+      },
+      {
+        label: 'Subjects',
+        path: "/admin/subjects"
+      },
+      {
+        label: 'Admissions',
+        path: "/admin/admissions"
+      },
+      {
+        label: 'Attendance',
+        path: "/admin/attendance"
+      },
+      {
+        label: 'Results & Performance',
+        path: "/admin/results"
+      },
+      {
+        label: 'TimeTable',
+        path: "/admin/timetable"
+      },
+    ]
+  }
+]

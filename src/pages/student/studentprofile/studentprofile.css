@@ -43,6 +43,7 @@
   align-items: center;
   gap: 6px;
   justify-content: center;
+  cursor: pointer;
 }
 
 .profile-edit-btn {
@@ -56,13 +57,14 @@
   justify-content: center;
   gap: 6px;
   font-weight: 600;
-  width: 120px;
+  min-width: 150px;
+  cursor: pointer;
 }
 .profile-main-section {
   padding: 30px;
   /* border: 1px solid black; */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   color: black;
   margin-top: -30px;
   gap: 30px;
@@ -71,7 +73,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  
 }
 .stu-profile-picture {
   color: #6d71e9;
@@ -107,7 +108,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  
+
   /* margin-left: 150px; */
   /* padding-left: 200px; */
 }
@@ -118,11 +119,65 @@
   min-height: 40vh;
   border-radius: 10px;
 
-    /* display: flex;
+  /* display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center; */
   gap: 10px;
 
   padding: 25px;
+}
+
+.student-academicsummary {
+  border: 1px solid #e5e7eb;
+  background: white;
+  min-height: 30vh;
+  border-radius: 10px;
+  gap: 10px;
+
+  padding: 25px;
+}
+
+@media (max-width: 768px) {
+  .profilegreeting-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 30px;
+  }
+  .profileaction-button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+.profile-changepass-btn {
+  background-color: #ffffff;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.profile-edit-btn {
+  padding: 10px;
+  border: none;
+  background-color: #2563eb;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  width: 100%;
+}
 }

@@ -1,0 +1,766 @@
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
+
+.studentcourses-container {
+  width: 100%;
+    background-color: #f5f6f8;
+  min-height: 100vh;
+  color: black;
+  padding: 30px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.coursegreeting-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.course-welcome-message h1 {
+  margin: 0;
+
+  color: #060d1f;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.course-welcome-message p {
+  margin: 4px 0 0;
+
+  color: #61708a;
+
+  font-size: 14px;
+}
+
+/* =====================================================
+   TOP RIGHT BUTTONS
+===================================================== */
+
+.courseaction-button {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+/* =====================================================
+   SORT WRAPPER
+===================================================== */
+
+.sort-wrapper {
+  position: relative;
+}
+
+/* =====================================================
+   SORT BUTTON
+===================================================== */
+
+.course-sort-btn {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  background: white;
+
+  color: #111827;
+
+  border: 1px solid #dce1e8;
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.course-sort-btn:hover {
+  background: #f8fafc;
+}
+
+/* =====================================================
+   ENROLL BUTTON
+===================================================== */
+
+.course-enroll-btn {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  padding: 11px 16px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.course-enroll-btn:hover {
+  background: #1d4ed8;
+}
+
+/* =====================================================
+   SORT DROPDOWN
+===================================================== */
+
+.sort-menu {
+  position: absolute;
+
+  top: calc(100% + 7px);
+
+  right: 0;
+
+  width: 200px;
+
+  background: white;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 10px;
+
+  padding: 6px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+  z-index: 100;
+}
+
+.sort-menu button {
+  width: 100%;
+
+  border: none;
+
+  background: transparent;
+
+  color: #374151;
+
+  text-align: left;
+
+  padding: 10px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.sort-menu button:hover {
+  background: #f3f6fa;
+}
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.course-error {
+  background: #fff1f2;
+
+  border: 1px solid #fecdd3;
+
+  color: #be123c;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  margin-bottom: 15px;
+
+  font-size: 13px;
+}
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.courses-toolbar {
+  display: flex;
+
+  align-items: center;
+
+  margin-bottom: 18px;
+}
+
+/* =====================================================
+   TABS
+===================================================== */
+
+.course-tabs {
+  display: flex;
+
+  gap: 8px;
+}
+
+.tab {
+  border: 1px solid #dce1e8;
+
+  background: white;
+
+  color: #52627a;
+
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  transition: 0.2s ease;
+}
+
+.tab:hover {
+  background: #f8fafc;
+}
+
+.tab.active {
+  background: #060d1f;
+
+  color: white;
+
+  border-color: #060d1f;
+}
+
+/* =====================================================
+   COURSE GRID
+===================================================== */
+
+.courses-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+/* =====================================================
+   COURSE CARD
+===================================================== */
+
+.course-card {
+  background: white;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+
+  transition: 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* =====================================================
+   CARD TOP
+===================================================== */
+
+.course-card-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 12px;
+}
+
+/* =====================================================
+   COURSE ICON
+===================================================== */
+
+.course-icon {
+  width: 44px;
+
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 12px;
+
+  font-size: 18px;
+
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   GRADE
+===================================================== */
+
+.grade {
+  background: #edf9f1;
+
+  color: #16803c;
+
+  padding: 5px 9px;
+
+  border-radius: 7px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+/* =====================================================
+   COURSE NAME
+===================================================== */
+
+.course-card h3 {
+  margin: 0 0 3px;
+
+  color: #0f172a;
+
+  font-size: 15px;
+
+  font-weight: 700;
+}
+
+/* =====================================================
+   TEACHER + SCHEDULE
+===================================================== */
+
+.course-teacher {
+  margin: 0;
+
+  color: #8390a5;
+
+  font-size: 12px;
+}
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+.progress-container {
+  margin-top: 15px;
+}
+
+.progress-background {
+  width: 100%;
+
+  height: 6px;
+
+  background: #edf0f3;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+
+  border-radius: 20px;
+
+  transition: width 0.3s ease;
+}
+
+/* =====================================================
+   CARD BOTTOM
+===================================================== */
+
+.course-card-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  border-top: 1px solid #e7e9ed;
+
+  margin-top: 13px;
+
+  padding-top: 12px;
+
+  font-size: 12px;
+}
+
+.course-card-bottom span {
+  color: #8793a7;
+}
+
+.course-card-bottom strong {
+  color: #111827;
+}
+
+/* =====================================================
+   NO COURSES
+===================================================== */
+
+.no-courses {
+  background: white;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 16px;
+
+  padding: 50px 20px;
+
+  text-align: center;
+}
+
+.no-courses h3 {
+  margin: 0 0 7px;
+
+  color: #111827;
+}
+
+.no-courses p {
+  margin: 0 0 20px;
+
+  color: #8793a7;
+
+  font-size: 14px;
+}
+
+.no-courses button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 10px 15px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.courses-loading {
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  min-height: 200px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+/* =====================================================
+   ENROLLMENT OVERLAY
+===================================================== */
+
+.enroll-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(6, 13, 31, 0.45);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  z-index: 1000;
+}
+
+/* =====================================================
+   ENROLLMENT MODAL
+===================================================== */
+
+.enroll-modal {
+  width: 100%;
+
+  max-width: 600px;
+
+  max-height: 85vh;
+
+  overflow-y: auto;
+
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 24px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* =====================================================
+   MODAL HEADER
+===================================================== */
+
+.enroll-modal-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 20px;
+}
+
+.enroll-modal-header h2 {
+  margin: 0 0 5px;
+
+  color: #111827;
+
+  font-size: 20px;
+}
+
+.enroll-modal-header p {
+  margin: 0;
+
+  color: #7b879a;
+
+  font-size: 14px;
+}
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.close-modal {
+  width: 34px;
+
+  height: 34px;
+
+  border: none;
+
+  background: #f3f5f8;
+
+  color: #475569;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.close-modal:hover {
+  background: #e8ebf0;
+}
+
+/* =====================================================
+   AVAILABLE COURSES
+===================================================== */
+
+.available-courses {
+  width: 100%;
+}
+
+/* =====================================================
+   AVAILABLE COURSE
+===================================================== */
+
+.available-course {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid #edf0f3;
+}
+
+.available-course:last-child {
+  border-bottom: none;
+}
+
+/* =====================================================
+   AVAILABLE COURSE INFORMATION
+===================================================== */
+
+.available-course-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.available-course-info h3 {
+  margin: 0 0 4px;
+
+  color: #111827;
+
+  font-size: 14px;
+}
+
+.available-course-info p {
+  margin: 0;
+
+  color: #8793a7;
+
+  font-size: 12px;
+}
+
+/* =====================================================
+   MODAL ENROLL BUTTON
+===================================================== */
+
+.available-course > button {
+  border: none;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 8px 12px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  flex-shrink: 0;
+}
+
+.available-course > button:hover {
+  background: #1d4ed8;
+}
+
+.available-course > button:disabled {
+  background: #e8ecf2;
+
+  color: #8b96a8;
+
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+  .courses-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .coursegreeting-section {
+    align-items: flex-start;
+
+    gap: 15px;
+
+    flex-direction: column;
+  }
+
+  .courseaction-button {
+    width: 100%;
+  }
+
+  .sort-wrapper {
+    flex: 1;
+  }
+
+  .course-sort-btn {
+    width: 100%;
+  }
+
+  .course-enroll-btn {
+    flex: 1;
+  }
+
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .courseaction-button {
+    flex-direction: column;
+  }
+
+  .sort-wrapper {
+    width: 100%;
+  }
+
+  .course-enroll-btn {
+    width: 100%;
+  }
+
+  .course-tabs {
+    width: 100%;
+
+    overflow-x: auto;
+  }
+
+  .tab {
+    white-space: nowrap;
+  }
+
+  .enroll-modal {
+    padding: 18px;
+
+    border-radius: 12px;
+  }
+
+  .available-course {
+    align-items: flex-start;
+  }
+}

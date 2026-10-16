@@ -10,7 +10,7 @@ import {
   FaLanguage,
 } from "react-icons/fa";
 // import DashboardanalysisCard from "../../../components/common/DashboardanalysisCard";
-
+ 
 import { useAuth } from "../../../context/AuthContext";
 
 import "../studentdashboard/studentdashboard.css";
@@ -32,7 +32,7 @@ export default function StudentDashboard() {
     month: "long",
     day: "numeric",
   });
-
+ 
   const courseProgress = [
     { course: "mathmematics", progress: "80" },
     { course: "English", progress: "75" },

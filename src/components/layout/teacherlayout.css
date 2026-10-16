@@ -1,0 +1,13 @@
+.teacher-layout{
+    min-height: 10vh;
+}
+
+.main-content{
+    margin-left: 250px;
+}
+
+@media (max-width: 768px) {
+    .main-content{
+        margin-left: 0;
+    }
+} 

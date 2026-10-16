@@ -19,7 +19,7 @@ function StudentLayout() {
 
                 <main>
                     <Outlet />
-                </main>
+                </main> 
             </div>
         </div>
     )

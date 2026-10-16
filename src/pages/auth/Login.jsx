@@ -15,7 +15,7 @@ function Login() {
             <LoginForm />
             <p className="have-account">Already have an account? {" "} <Link to="/signup" style={{textDecoration: "none", fontSize: "17px", fontWeight: 'bold', }}> Signup</Link> </p>
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
