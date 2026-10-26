@@ -1,146 +1,368 @@
-.hero{
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #060d1f;
+  
+}
+
+/* Background image layer */
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: heroFade 1.2s ease-in-out;
+}
+
+/* Smooth transition when the background changes */
+@keyframes heroFade {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 24px;
+}
+
+.welcome-message {
+  background-color: rgba(31, 30, 35, 0.9);
+  font-size: 12px;
+  font-weight: 400;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #e1b153;
+  border-radius: 20px;
+  max-width: 400px;
+  width: 250px;
+  min-height: 40px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  /* margin-top: 0px; */
+}
+
+.hero-messages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-heading {
+  font-size: 85px;
+  line-height: 1.2;
+  margin-top: 10px;
+  color: #ffffff;
+  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+}
+
+.hero-description {
+  font-size: 20px;
+  line-height: 1.5;
+  color: #f0f2f7;
+  margin-top: 5px;
+  max-width: 750px;
+}
+
+.hero-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 55px;
+}
+
+.hero-buttons div {
+  display: none;
+}
+
+.hero-signup {
+  width: 250px;
+  min-height: 65px;
+  border: none;
+  border-radius: 10px;
+  background-color: #e1b153;
+  color: #060d1f;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.hero-signup:hover {
+  background-color: #c9963a;
+  transform: translateY(-3px);
+}
+
+/* =========================
+   STATISTICS
+========================= */
+
+.statistics {
+  background-color: #0b1223;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 120px;
+  min-height: 25vh;
+  padding: 30px 20px;
+}
+
+.statistics-content {
+  display: flex;
+  gap: 200px;
+}
+
+.student-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.student-stats h2 {
+  font-size: 50px;
+  font-style: italic;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #c9963a;
+}
+
+.student-stats p {
+  margin-top: -15px;
+  font-size: 20px;
+  color: #c9963a;
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  text-align: center;
+}
+
+.features-content {
+  width: 70%;
+}
+
+.features h1 {
+  font-size: 50px;
+  margin-top: -10px;
+}
+
+.features-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* =========================
+   GET STARTED SECTION
+========================= */
+
+.get-started-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.getstarted-content {
+  width: 50%;
+}
+
+.getstarted-content h1 {
+  font-size: 50px;
+  margin-top: -10px;
+}
+
+.getstarted-content p {
+  font-size: 16px;
+  color: rgb(194, 191, 187);
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+/* =========================
+   TABLETS AND MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .hero {
+    /* min-height: 85vh; */
+    min-height: 85svh;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .hero-background {
+    background-position: 62% center;
+  }
+
+  .hero-content {
+    align-items: flex-start;
     justify-content: center;
-    text-align: center;
+    max-width: 100%;
+    padding: 50px 24px;
+  }
+
+  .welcome-message {
+    margin-top: 0;
+    width: 230px;
+    min-height: 38px;
+    font-size: 11px;
+  }
+
+  .hero-messages {
+    align-items: flex-start;
     width: 100%;
-}
-.welcome-message{
-    background-color: #1F1E23;
-    font-size: 12px;
-    font-weight: 400;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #BFA45D;
-    border-radius: 20px;
-    max-width:  400px;
-    width: 250px;
-    height: 40px;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
+  }
 
-}
-.hero-content{
+  .hero-heading {
+    text-align: left;
+    font-size: clamp(38px, 7vw, 50px);
+    line-height: 1.15;
+  }
+
+  .hero-description {
+    font-size: 15px;
+    line-height: 1.7;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .hero-buttons {
     display: flex;
     flex-direction: column;
-    max-width: 700px;
-    align-items: center;
-    justify-content: center;
-}
-.hero-heading{
-    font-size: 85px;
-    line-height: 1.3;
-    margin-top: 10px;
-    
-}
-.hero-description{
-    font-size: 20px;
-    line-height: 1.5;
-    color: var(--color-text);
-    margin-top: 5px;
-}
-.hero-buttons{
-    display: flex;
-    gap: 100px;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 80px;
-    
-}
-.hero-signup{
-    width: 250px;
-    height: 65px;
-    border: none;
-    border-radius: 10px;
-    background-color: var(--color-background);
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 2.0s ease;
-    
-}
-.hero-signup:hover{
-    transform: translateY(6px);
-}
+    align-items: flex-start;
+    margin-top: 25px;
+    gap: 15px;
+  }
 
-
-
-.statistics{
-    background-color: #0B1223 ;
+  .hero-buttons div {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 120px;
-    height: 25vh;
-}
-.statistics-content{
-    display: flex;
-    gap: 200px;
-}
-.student-stats{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.student-stats h2{
-    font-size: 50px;
-    font-style: italic;
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    color: #C9963A;
-}
-.student-stats P{
-    margin-top: -45px;
-    font-size: 20px;
-    color: #C9963A; 
-}
+    gap: 5px;
+    font-size: 13px;
+    color: #ffffff;
+  }
 
-.features{
-    display: flex;
-    justify-content: center;
+  .mobilehero-login {
+    display: inline-flex;
     align-items: center;
+    font-size: 15px;
+    color: #e1b153;
+    text-decoration: none;
+  }
+
+  .hero-signup {
+    width: 200px;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  .statistics {
+    display: none;
+  }
+
+  .features {
+    margin-top: 70px;
+    padding: 0 20px;
+  }
+
+  .features-content {
+    width: 100%;
+  }
+
+  .features h1 {
+    font-size: 35px;
+  }
+
+  .features-card {
+    grid-template-columns: 1fr;
+  }
+
+  .get-started-section {
     margin-top: 100px;
-    text-align: center;
-    /* width: 100%; */
-    /* border: 1px solid yellow; */
-}
-.features-content{
-    /* border: 1px solid red; */
-    width: 70%;
-}
-.features h1{
-    font-size: 50px;
-    margin-top: -10px;
+    width: 100%;
+  }
+
+  .getstarted-content {
+    width: 100%;
+  }
+
+  .getstarted-content h1 {
+    font-size: 30px;
+    margin-top: 10px;
+  }
+
+  .getstarted-content p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
 }
 
-.features-card{
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
-    gap: 20px;
-    margin-top: 20px;
-    /* padding: 5px; */
-    /* width: 100%;  */
+/* =========================
+   SMALL MOBILE SCREENS
+========================= */
+
+@media (max-width: 400px) {
+  .hero-content {
+    padding: 40px 18px;
+  }
+
+  .hero-heading {
+    font-size: 36px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .hero-background {
+    background-position: 65% center;
+  }
 }
-.get-started-section{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 200px;
-    text-align: center;
-}
-.getstarted-content{
-    
-    width: 50%;
-}
-.getstarted-content h1{
-    font-size: 50px;
-    margin-top: -10px;
-}
-.getstarted-content p{
-font-size: 16px;
-color: rgb(194, 191, 187);
-font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-background {
+    animation: none;
+  }
+
+  .hero-signup {
+    transition: none;
+  }
 }

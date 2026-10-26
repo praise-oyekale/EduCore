@@ -1,10 +1,8 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-
-import { getTeacherProfile } from "../services/teacherService";
-import { getStudentProfile } from "../services/studentService";
+import { PageLoader } from "../components/common/PageLoader";
 
 const AuthContext = createContext();
 
@@ -15,67 +13,90 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
+    let unsubscribeDoc = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+      // Clean up previous document listener on auth state changes
+      if (unsubscribeDoc) {
+        unsubscribeDoc();
+        unsubscribeDoc = null;
+      }
+
       setUser(currentUser);
-      setProfile(null);
-      setRole(null);
- 
+
       if (!currentUser) {
+        setProfile(null);
+        setRole(null);
         setLoading(false);
         return;
       }
 
+      setLoading(true);
+
       try {
-        // 1. Check whether the user is an admin
-        const adminQuery = query(
-          collection(db, "admin"),
-          where("email", "==", currentUser.email),
+        const uid = currentUser.uid;
+        let detectedRole = null;
+
+        // 1. Check admin collection by UID
+        const adminSnap = await getDoc(doc(db, "admin", uid));
+        if (adminSnap.exists()) {
+          detectedRole = "admin";
+        } else {
+          // 2. Check teacher collection by UID
+          const teacherSnap = await getDoc(doc(db, "teacher", uid));
+          if (teacherSnap.exists()) {
+            detectedRole = "teacher";
+          } else {
+            // 3. Check student collection by UID
+            const studentSnap = await getDoc(doc(db, "student", uid));
+            if (studentSnap.exists()) {
+              detectedRole = "student";
+            }
+          }
+        }
+
+        if (!detectedRole) {
+          console.warn("No user document found in admin, teacher, or student collections.");
+          setProfile(null);
+          setRole(null);
+          setLoading(false);
+          return;
+        }
+
+        setRole(detectedRole);
+
+        // 4. Subscribe to REAL-TIME document updates
+        const userDocRef = doc(db, detectedRole, uid);
+        unsubscribeDoc = onSnapshot(
+          userDocRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              setProfile({ id: docSnap.id, ...docSnap.data() });
+            } else {
+              setProfile(null);
+            }
+            setLoading(false);
+          },
+          (error) => {
+            console.error("Error listening to user profile changes:", error);
+            setLoading(false);
+          }
         );
-
-        const adminSnapshot = await getDocs(adminQuery);
-
-        if (!adminSnapshot.empty) {
-          setRole("admin");
-          setProfile({
-            ...adminSnapshot.docs[0].data(),
-            uid: currentUser.uid,
-          });
-          return;
-        }
-
-        // 2. Get the teacher profile using the user's UID
-        const teacherProfile = await getTeacherProfile(currentUser.uid);
-
-        if (teacherProfile) {
-          setRole("teacher");
-          setProfile(teacherProfile);
-          return;
-        }
-
-        // 3. If not a teacher, check the student profile
-        const studentProfile = await getStudentProfile(currentUser.uid);
-
-        if (studentProfile) {
-          setRole("student");
-          setProfile(studentProfile);
-          return;
-        }
-
-        console.warn("No profile found for this user.");
       } catch (error) {
-        console.error("Error fetching user profile:", error);
-      } finally {
+        console.error("Error setting up auth profile:", error);
         setLoading(false);
       }
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeDoc) unsubscribeDoc();
+    };
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, profile, role, loading }}>
-      {!loading && children}
+      {loading ? <PageLoader /> : children}
     </AuthContext.Provider>
   );
 }

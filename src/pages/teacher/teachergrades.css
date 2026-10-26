@@ -1,0 +1,451 @@
+.grades-page-container {
+  background: #f4f6f9;
+  min-height: 100vh;
+  padding: 32px 28px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.grades-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.grades-header-title h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.grades-header-title p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.grades-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Subject Filter Pills */
+.subject-filter-pills {
+  display: flex;
+  background-color: #e2e8f0;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.subject-pill {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subject-pill.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Export Button */
+.export-grades-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.export-grades-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.export-grades-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Class Selector Row */
+.class-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.selector-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.class-filter-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+}
+
+.class-filter-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+/* Stats Cards */
+.grades-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.grades-stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.avg-icon {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.high-icon {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.low-icon {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.warning-icon {
+  background-color: #ffedd5;
+  color: #ea580c;
+}
+
+.stat-body h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.stat-body p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Main Content Split Grid */
+.grades-content-split {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .grades-content-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gradebook Card */
+.gradebook-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.gradebook-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.gradebook-card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.edit-grades-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-grades-btn:hover {
+  text-decoration: underline;
+}
+
+.edit-actions-group {
+  display: flex;
+  gap: 8px;
+}
+
+.cancel-btn {
+  background: #f1f5f9;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Gradebook Table */
+.gradebook-table-wrapper {
+  overflow-x: auto;
+}
+
+.gradebook-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gradebook-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.gradebook-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f8fafc;
+  vertical-align: middle;
+}
+
+.student-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.student-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.score-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.score-input {
+  width: 70px;
+  padding: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000; 
+  background-color: #ffffff;
+}
+
+/* Grade Badges */
+.grade-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-a {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-b {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-c {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge-d {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.badge-e,
+.badge-f {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge-na {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+/* Distribution Chart Card */
+.distribution-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.distribution-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 24px 0;
+}
+
+.chart-container {
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bars-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  height: 180px;
+}
+
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.bar-track {
+  width: 32px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  transition: height 0.4s ease;
+  min-height: 4px;
+}
+
+.fill-f {
+  background-color: #ef4444;
+}
+
+.fill-d {
+  background-color: #f97316;
+}
+
+.fill-c {
+  background-color: #3b82f6;
+}
+
+.fill-a {
+  background-color: #16a34a;
+}
+
+.fill-b {
+  background-color: #8b5cf6;
+}
+
+.bar-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.gradebook-loading,
+.gradebook-empty {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+  font-size: 14px;
+}

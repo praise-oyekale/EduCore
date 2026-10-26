@@ -1,0 +1,154 @@
+.apply-form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.applicant-type-toggle {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.toggle-pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-pill.active {
+    background-color: #f69919;
+    color: #000000;
+    border-color: #f69919;
+}
+
+/* Grid Layout Fixes - Forces perfect bottom alignment */
+.apply-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    align-items: center; /* This forces the inputs/selects to align perfectly at the bottom */
+}
+
+/* Forces the custom <Input /> component wrappers to behave identically */
+.apply-grid-row > div, 
+.apply-select-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0 !important; /* Removes any stray margins pushing them out of alignment */
+}
+
+@media (max-width: 600px) {
+    .apply-grid-row {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+}
+/* Dark Theme Inputs */
+.apply-form input:not([type="checkbox"]),
+.apply-form select {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #0b1120; /* Dark input background */
+    color: #f8fafc; /* White text */
+    outline: none;
+    height: 50px;
+    transition: border-color 0.2s ease;
+}
+
+.apply-form input:not([type="checkbox"]):focus,
+.apply-form select:focus {
+    border-color: #f69919;
+}
+
+.apply-form select option {
+    background-color: #0b1120;
+    color: #f8fafc;
+}
+
+/* Labels */
+.apply-form label,
+.apply-select-group label {
+    display: block;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8; /* Light gray text */
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+/* Terms Checkbox */
+.terms {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.terms input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: #f69919;
+}
+
+.terms label {
+    font-size: 14px;
+    color: #cbd5e1;
+    font-weight: 400;
+    text-transform: none;
+    cursor: pointer;
+}
+
+
+.apply-form button[type="submit"] {
+    width: 100%;
+    padding: 16px;   
+    background-color: #f69919;
+    color: #000000;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.apply-form button[type="submit"]:hover {
+    background-color: #e58a15;
+}
+
+
+.apply-form-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-align: left;
+}

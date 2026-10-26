@@ -1,110 +1,68 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  FaFlask,
-  FaVial,
-  FaPlus,
+  FaChalkboardTeacher,
   FaTimes,
   FaSearch,
   FaArrowRight,
 } from "react-icons/fa";
 
+import { useAuth } from "../../context/AuthContext";
+import {
+  getTeacherClassesData,
+  getTeacherProfile,
+  updateStudentSubjectScore,
+} from "../../services/teacherService";
+
 import "../teacher/teacherclasses.css";
 
-const initialClasses = [
-  {
-    id: "CHEM201",
-    name: "Chemistry 201",
-    grade: "Grade 11-B",
-    room: "Room 214",
-    students: 28,
-    attendance: 95,
-    averageScore: 88,
-    color: "blue",
-    icon: "flask",
-  },
-  {
-    id: "CHEM101",
-    name: "Chemistry 101",
-    grade: "Grade 10-A",
-    room: "Room 214",
-    students: 31,
-    attendance: 92,
-    averageScore: 78,
-    color: "purple",
-    icon: "flask",
-  },
-  {
-    id: "ADVCH",
-    name: "Advanced Chemistry",
-    grade: "Grade 12-A",
-    room: "Room 214",
-    students: 22,
-    attendance: 89,
-    averageScore: 92,
-    color: "orange",
-    icon: "vial",
-  },
-  {
-    id: "LAB11",
-    name: "Lab Session",
-    grade: "Grade 11-B",
-    room: "Lab 2",
-    students: 28,
-    attendance: 96,
-    averageScore: 85,
-    color: "green",
-    icon: "lab",
-  },
-];
+const COLORS = ["blue", "purple", "orange", "green"];
 
-function ClassIcon({ icon }) {
-  if (icon === "vial") {
-    return <FaVial />;
+function toList(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
   }
-
-  if (icon === "lab") {
-    return (
-      <span className="teacher-class-double-icon">
-        <FaFlask />
-        <FaVial />
-      </span>
-    );
-  }
-
-  return <FaFlask />;
+  return [];
 }
 
-function ClassCard({ classItem, onManage }) {
+const percent = (value) => (value == null ? "—" : `${value}%`);
+
+/* ---------- Class card ---------- */
+
+function ClassCard({ classItem, subjects, onManage }) {
   return (
     <article className="teacher-class-card">
       <div className="teacher-class-card-top">
         <div className={`teacher-class-icon ${classItem.color}`}>
-          <ClassIcon icon={classItem.icon} />
+          <FaChalkboardTeacher />
         </div>
 
         <span className="teacher-class-student-badge">
-          {classItem.students} students
+          {classItem.studentCount} student
+          {classItem.studentCount === 1 ? "" : "s"}
         </span>
       </div>
 
       <div className="teacher-class-card-info">
         <h2>{classItem.name}</h2>
         <p>
-          {classItem.grade} · {classItem.room}
+          {classItem.isClassTeacher ? "Class teacher" : "Subject teacher"}
+          {subjects.length ? ` · ${subjects.join(", ")}` : ""}
         </p>
       </div>
 
       <div className="teacher-class-progress">
         <div
           className={`teacher-class-progress-fill ${classItem.color}`}
-          style={{
-            width: `${classItem.averageScore}%`,
-          }}
+          style={{ width: `${classItem.averageScore || 0}%` }}
         />
       </div>
 
       <div className="teacher-class-card-bottom">
-        <span>Avg. score {classItem.averageScore}%</span>
+        <span>Avg. score {percent(classItem.averageScore)}</span>
 
         <button
           type="button"
@@ -118,70 +76,55 @@ function ClassCard({ classItem, onManage }) {
   );
 }
 
-function CreateClassModal({ onClose, onCreate }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    grade: "",
-    room: "",
-    students: "0",
-    attendance: "0",
-    averageScore: "0",
-    color: "blue",
-    icon: "flask",
+/* ---------- Roster modal (view students, enter scores) ---------- */
+
+function RosterModal({ classItem, teacherSubjects, onClose, onSaved }) {
+  const [scores, setScores] = useState({});
+  const [savingKey, setSavingKey] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  const mine = teacherSubjects.map((s) => s.toLowerCase());
+
+  // One row for every student and subject this teacher is responsible for
+  const rows = [];
+  classItem.students.forEach((student) => {
+    const subjects = Array.isArray(student.subjects) ? student.subjects : [];
+
+    subjects
+      .filter(
+        (subject) =>
+          mine.length === 0 ||
+          mine.includes(String(subject.name).toLowerCase()),
+      )
+      .forEach((subject) => {
+        rows.push({
+          key: `${student.id}::${subject.name}`,
+          studentId: student.id,
+          student: student.fullName || "Unnamed student",
+          subject: subject.name,
+          score: Number(subject.score) || 0,
+        });
+      });
   });
 
-  const [error, setError] = useState("");
+  async function handleSave(row) {
+    const value = scores[row.key] ?? row.score;
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
+    setSavingKey(row.key);
     setError("");
-  }
+    setMessage("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    if (!formData.name.trim() || !formData.grade.trim()) {
-      setError("Please enter a class name and grade.");
-      return;
+    try {
+      await updateStudentSubjectScore(row.studentId, row.subject, value);
+      await onSaved();
+      setMessage(`Saved ${row.student}'s ${row.subject} score.`);
+    } catch (err) {
+      console.error("Error saving score:", err);
+      setError(err.message || "Unable to save this score.");
+    } finally {
+      setSavingKey("");
     }
-
-    const students = Number(formData.students);
-    const attendance = Number(formData.attendance);
-    const averageScore = Number(formData.averageScore);
-
-    if (
-      !Number.isInteger(students) ||
-      students < 0 ||
-      !Number.isFinite(attendance) ||
-      attendance < 0 ||
-      attendance > 100 ||
-      !Number.isFinite(averageScore) ||
-      averageScore < 0 ||
-      averageScore > 100
-    ) {
-      setError("Enter valid student counts and percentages.");
-      return;
-    }
-
-    onCreate({
-      id: `CLASS-${Date.now()}`,
-      name: formData.name.trim(),
-      grade: formData.grade.trim(),
-      room: formData.room.trim() || "Not assigned",
-      students,
-      attendance,
-      averageScore,
-      color: formData.color,
-      icon: formData.icon,
-    });
-
-    onClose();
   }
 
   return (
@@ -192,174 +135,179 @@ function CreateClassModal({ onClose, onCreate }) {
       }}
     >
       <section
-        className="teacher-classes-modal"
+        className="teacher-classes-modal teacher-roster-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="create-class-heading"
+        aria-labelledby="roster-heading"
       >
         <div className="teacher-classes-modal-heading">
           <div>
-            <h2 id="create-class-heading">Create class</h2>
-            <p>Add a class to your class list.</p>
+            <h2 id="roster-heading">{classItem.name} roster</h2>
+            <p>
+              {classItem.studentCount} student
+              {classItem.studentCount === 1 ? "" : "s"} · Enter scores out of
+              100
+            </p>
           </div>
 
           <button
             type="button"
             className="teacher-classes-modal-close"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Close"
           >
             <FaTimes />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="teacher-classes-form-grid">
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-name">Class name *</label>
-              <input
-                id="class-name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="e.g. Chemistry 201"
-                required
-              />
-            </div>
+        {error && <p className="teacher-classes-form-error">{error}</p>}
+        {message && <p className="teacher-roster-success">{message}</p>}
 
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-grade">Grade / Class *</label>
-              <input
-                id="class-grade"
-                name="grade"
-                value={formData.grade}
-                onChange={handleChange}
-                placeholder="e.g. SS2 Science"
-                required
-              />
-            </div>
+        {classItem.students.length === 0 ? (
+          <p className="teacher-roster-empty">
+            No students are in this class yet.
+          </p>
+        ) : rows.length === 0 ? (
+          <p className="teacher-roster-empty">
+            The students in this class have no subjects matching yours yet.
+          </p>
+        ) : (
+          <div className="teacher-roster-scroll">
+            <table className="teacher-roster-table">
+              <thead>
+                <tr>
+                  <th>STUDENT</th>
+                  <th>SUBJECT</th>
+                  <th>SCORE</th>
+                  <th />
+                </tr>
+              </thead>
 
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-room">Room</label>
-              <input
-                id="class-room"
-                name="room"
-                value={formData.room}
-                onChange={handleChange}
-                placeholder="e.g. Room 214"
-              />
-            </div>
-
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-students">Number of students</label>
-              <input
-                id="class-students"
-                name="students"
-                type="number"
-                min="0"
-                step="1"
-                value={formData.students}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-attendance">Average attendance (%)</label>
-              <input
-                id="class-attendance"
-                name="attendance"
-                type="number"
-                min="0"
-                max="100"
-                value={formData.attendance}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-score">Average score (%)</label>
-              <input
-                id="class-score"
-                name="averageScore"
-                type="number"
-                min="0"
-                max="100"
-                value={formData.averageScore}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="teacher-classes-form-field">
-              <label htmlFor="class-color">Card color</label>
-              <select
-                id="class-color"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-              >
-                <option value="blue">Blue</option>
-                <option value="purple">Purple</option>
-                <option value="orange">Orange</option>
-                <option value="green">Green</option>
-              </select>
-            </div>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.key}>
+                    <td className="teacher-classes-table-name">
+                      {row.student}
+                    </td>
+                    <td>{row.subject}</td>
+                    <td>
+                      <input
+                        className="teacher-roster-score-input"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={scores[row.key] ?? row.score}
+                        onChange={(e) =>
+                          setScores((previous) => ({
+                            ...previous,
+                            [row.key]: e.target.value,
+                          }))
+                        }
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="teacher-class-small-button"
+                        onClick={() => handleSave(row)}
+                        disabled={savingKey === row.key}
+                      >
+                        {savingKey === row.key ? "Saving..." : "Save"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        )}
 
-          {error && <p className="teacher-classes-form-error">{error}</p>}
-
-          <div className="teacher-classes-modal-actions">
-            <button
-              type="button"
-              className="teacher-classes-cancel-button"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-
-            <button type="submit" className="teacher-classes-create-button">
-              <FaPlus />
-              Create class
-            </button>
-          </div>
-        </form>
+        <div className="teacher-classes-modal-actions">
+          <button
+            type="button"
+            className="teacher-classes-cancel-button"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
       </section>
     </div>
   );
 }
 
+/* ---------- Page ---------- */
+
 export default function TeacherClasses() {
-  const [classes, setClasses] = useState(initialClasses);
+  const { user } = useAuth();
+  const uid = user?.uid;
+
+  const [teacher, setTeacher] = useState(null);
+  const [classes, setClasses] = useState([]);
   const [search, setSearch] = useState("");
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedName, setSelectedName] = useState(null);
+
+  const loadClasses = useCallback(async () => {
+    if (!uid) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setError("");
+
+      const profile = await getTeacherProfile(uid);
+      setTeacher(profile);
+
+      const data = await getTeacherClassesData(profile || {});
+
+      setClasses(
+        data.map((item, index) => ({
+          ...item,
+          color: COLORS[index % COLORS.length],
+        })),
+      );
+    } catch (err) {
+      console.error("Error loading classes:", err);
+      setError("We couldn't load your classes. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [uid]);
+
+  useEffect(() => {
+    loadClasses();
+  }, [loadClasses]);
+
+  const subjects = useMemo(
+    () => toList(teacher?.subjectsTaught),
+    [teacher?.subjectsTaught],
+  );
 
   const filteredClasses = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const term = search.trim().toLowerCase();
+    if (!term) return classes;
 
-    if (!query) return classes;
-
-    return classes.filter((classItem) =>
-      [classItem.name, classItem.grade, classItem.room].some((value) =>
-        value.toLowerCase().includes(query),
-      ),
+    return classes.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term) ||
+        subjects.some((s) => s.toLowerCase().includes(term)),
     );
-  }, [classes, search]);
+  }, [classes, search, subjects]);
 
-  function handleCreateClass(newClass) {
-    setClasses((previous) => [...previous, newClass]);
-    setNotice(
-      "Class added to this page. It will not persist after refresh until Firestore is connected.",
+  // Always read the freshest copy of the selected class after a score save
+  const selectedClass = classes.find((item) => item.name === selectedName);
+
+  if (loading) {
+    return (
+      <main className="teacher-classes-page">
+        <div className="teacher-classes-container">
+          <div className="teacher-classes-empty">Loading your classes...</div>
+        </div>
+      </main>
     );
-  }
-
-  function handleManage(classItem) {
-    setNotice(
-      `You selected ${classItem.name}. The class details, roster, attendance, and grades can be connected here next.`,
-    );
-  }
-
-  function handleOpenClass(classItem) {
-    handleManage(classItem);
   }
 
   return (
@@ -368,25 +316,19 @@ export default function TeacherClasses() {
         <header className="teacher-classes-header">
           <div>
             <h1>My Classes</h1>
-            <p>{classes.length} active classes this semester · Fall 2026.</p>
+            <p>
+              {classes.length} assigned class{classes.length === 1 ? "" : "es"}
+              {subjects.length ? ` · ${subjects.join(", ")}` : ""}.
+            </p>
           </div>
-
-          <button
-            type="button"
-            className="teacher-classes-create-button"
-            onClick={() => setShowCreateModal(true)}
-          >
-            <FaPlus />
-            Create class
-          </button>
         </header>
 
-        {notice && (
-          <div className="teacher-classes-notice" role="status">
-            <p>{notice}</p>
+        {error && (
+          <div className="teacher-classes-notice" role="alert">
+            <p>{error}</p>
             <button
               type="button"
-              onClick={() => setNotice("")}
+              onClick={() => setError("")}
               aria-label="Dismiss message"
             >
               <FaTimes />
@@ -400,7 +342,7 @@ export default function TeacherClasses() {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by class, grade, or room..."
+            placeholder="Search by class or subject..."
             aria-label="Search classes"
           />
         </div>
@@ -410,7 +352,8 @@ export default function TeacherClasses() {
             <ClassCard
               key={classItem.id}
               classItem={classItem}
-              onManage={handleManage}
+              subjects={subjects}
+              onManage={(item) => setSelectedName(item.name)}
             />
           ))}
 
@@ -418,7 +361,11 @@ export default function TeacherClasses() {
             <div className="teacher-classes-empty">
               <FaSearch />
               <h2>No classes found</h2>
-              <p>Try another search term.</p>
+              <p>
+                {classes.length === 0
+                  ? "No classes have been assigned to you yet. Please contact the admin."
+                  : "Try another search term."}
+              </p>
             </div>
           )}
         </section>
@@ -427,7 +374,9 @@ export default function TeacherClasses() {
           <div className="teacher-classes-roster-heading">
             <div>
               <h2>Class roster overview</h2>
-              <p>Summary of your classes and their performance.</p>
+              <p>
+                Summary of your classes. Attendance covers the last 30 days.
+              </p>
             </div>
           </div>
 
@@ -436,8 +385,7 @@ export default function TeacherClasses() {
               <thead>
                 <tr>
                   <th>CLASS</th>
-                  <th>GRADE</th>
-                  <th>ROOM</th>
+                  <th>ROLE</th>
                   <th>STUDENTS</th>
                   <th>AVG. ATTENDANCE</th>
                   <th>AVG. SCORE</th>
@@ -451,16 +399,19 @@ export default function TeacherClasses() {
                     <td className="teacher-classes-table-name">
                       {classItem.name}
                     </td>
-                    <td>{classItem.grade}</td>
-                    <td>{classItem.room}</td>
-                    <td>{classItem.students}</td>
-                    <td>{classItem.attendance}%</td>
-                    <td>{classItem.averageScore}%</td>
+                    <td>
+                      {classItem.isClassTeacher
+                        ? "Class teacher"
+                        : "Subject teacher"}
+                    </td>
+                    <td>{classItem.studentCount}</td>
+                    <td>{percent(classItem.attendance)}</td>
+                    <td>{percent(classItem.averageScore)}</td>
                     <td>
                       <button
                         type="button"
                         className="teacher-classes-open-button"
-                        onClick={() => handleOpenClass(classItem)}
+                        onClick={() => setSelectedName(classItem.name)}
                       >
                         Open <FaArrowRight />
                       </button>
@@ -470,7 +421,7 @@ export default function TeacherClasses() {
 
                 {filteredClasses.length === 0 && (
                   <tr>
-                    <td colSpan="7" className="teacher-classes-no-rows">
+                    <td colSpan="6" className="teacher-classes-no-rows">
                       No classes to display.
                     </td>
                   </tr>
@@ -481,10 +432,13 @@ export default function TeacherClasses() {
         </section>
       </div>
 
-      {showCreateModal && (
-        <CreateClassModal
-          onClose={() => setShowCreateModal(false)}
-          onCreate={handleCreateClass}
+      {selectedClass && (
+        <RosterModal
+          key={selectedClass.name}
+          classItem={selectedClass}
+          teacherSubjects={subjects}
+          onClose={() => setSelectedName(null)}
+          onSaved={loadClasses}
         />
       )}
     </main>

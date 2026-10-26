@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 
 import {
   createTeacherProfile,
+  getAssignedStudents,
   getTeacherProfile,
   updateTeacherProfile,
 } from "../../services/teacherService";
@@ -14,46 +15,32 @@ import {
   FaCertificate,
   FaTimes,
   FaSave,
-  FaUserTie,
 } from "react-icons/fa";
 
 import "../teacher/teacherprofile.css";
 
 const emptyTeacher = {
+  title: "",
   fullName: "",
   staffId: "",
   department: "",
+  position: "",
   employmentType: "",
   email: "",
   dateOfBirth: "",
   phoneNumber: "",
   office: "",
-  classes: 0,
-  students: 0,
-  yearsAtSchool: 0,
   dateJoined: "",
   reportingTo: "",
-  subjectsTaught: "",
+  qualification: "",
+  certification: "",
+  classTeacherOf: "",
   subject: "",
+  subjectsTaught: [],
   assignedClasses: [],
 };
 
-const qualifications = [
-  {
-    id: 1,
-    title: "Qualifications",
-    institution: "Add your qualifications when this feature is implemented.",
-    icon: <FaGraduationCap />,
-    color: "purple",
-  },
-  {
-    id: 2,
-    title: "Teaching certification",
-    institution: "Certification details have not been added yet.",
-    icon: <FaCertificate />,
-    color: "blue",
-  },
-];
+/* ---------- Helpers ---------- */
 
 function getInitials(name = "") {
   return (
@@ -81,6 +68,32 @@ function formatDate(dateString) {
     year: "numeric",
   });
 }
+
+function yearsSince(dateString) {
+  if (!dateString) return 0;
+
+  const start = new Date(`${dateString}T00:00:00`);
+  if (Number.isNaN(start.getTime())) return 0;
+
+  return Math.max(
+    0,
+    Math.floor((Date.now() - start.getTime()) / (365.25 * 24 * 60 * 60 * 1000)),
+  );
+}
+
+// Subjects may be a list (new) or a comma-separated string (old data)
+function toList(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+/* ---------- Pieces ---------- */
 
 function ProfileField({
   label,
@@ -207,10 +220,11 @@ function PersonalInformation({
   );
 }
 
-function TeacherOverview({ teacher }) {
-  const assignedClasses = Array.isArray(teacher.assignedClasses)
-    ? teacher.assignedClasses.length
-    : Number(teacher.classes) || 0;
+function TeacherOverview({ teacher, studentCount }) {
+  const classCount = toList(teacher.assignedClasses).length;
+  const displayName =
+    [teacher.title, teacher.fullName].filter(Boolean).join(" ") ||
+    "Teacher name not set";
 
   return (
     <section className="teacher-profile-card teacher-overview-card">
@@ -219,7 +233,7 @@ function TeacherOverview({ teacher }) {
           {getInitials(teacher.fullName)}
         </div>
 
-        <h2>{teacher.fullName || "Teacher name not set"}</h2>
+        <h2>{displayName}</h2>
 
         <p className="teacher-profile-staff-id">
           Staff ID: {teacher.staffId || "Not assigned"}
@@ -238,17 +252,17 @@ function TeacherOverview({ teacher }) {
 
       <div className="teacher-profile-stats">
         <div className="teacher-profile-stat">
-          <strong>{assignedClasses}</strong>
+          <strong>{classCount}</strong>
           <span>Classes</span>
         </div>
 
         <div className="teacher-profile-stat">
-          <strong>{Number(teacher.students) || 0}</strong>
+          <strong>{studentCount}</strong>
           <span>Students</span>
         </div>
 
         <div className="teacher-profile-stat">
-          <strong>{Number(teacher.yearsAtSchool) || 0} yrs</strong>
+          <strong>{yearsSince(teacher.dateJoined)} yrs</strong>
           <span>At school</span>
         </div>
       </div>
@@ -256,7 +270,26 @@ function TeacherOverview({ teacher }) {
   );
 }
 
-function Qualifications() {
+function Qualifications({ teacher }) {
+  const items = [
+    {
+      id: 1,
+      title: "Qualification",
+      detail: teacher.qualification || "No qualification has been added yet.",
+      icon: <FaGraduationCap />,
+      color: "purple",
+    },
+    {
+      id: 2,
+      title: "Teaching certification",
+      detail:
+        teacher.certification ||
+        "Certification details have not been added yet.",
+      icon: <FaCertificate />,
+      color: "blue",
+    },
+  ];
+
   return (
     <section className="teacher-profile-card teacher-qualifications-card">
       <div className="teacher-profile-card-heading">
@@ -264,17 +297,15 @@ function Qualifications() {
       </div>
 
       <div className="teacher-qualifications-list">
-        {qualifications.map((qualification) => (
-          <div className="teacher-qualification-item" key={qualification.id}>
-            <div
-              className={`teacher-qualification-icon ${qualification.color}`}
-            >
-              {qualification.icon}
+        {items.map((item) => (
+          <div className="teacher-qualification-item" key={item.id}>
+            <div className={`teacher-qualification-icon ${item.color}`}>
+              {item.icon}
             </div>
 
             <div className="teacher-qualification-details">
-              <h3>{qualification.title}</h3>
-              <p>{qualification.institution}</p>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
             </div>
           </div>
         ))}
@@ -284,20 +315,20 @@ function Qualifications() {
 }
 
 function EmploymentSummary({ teacher }) {
+  const subjects = toList(teacher.subjectsTaught);
+  const classes = toList(teacher.assignedClasses);
+
   const details = [
-    { label: "Date joined", value: teacher.dateJoined },
     {
-      label: "Department",
-      value: teacher.department || teacher.subject,
+      label: "Date joined",
+      value: teacher.dateJoined ? formatDate(teacher.dateJoined) : "",
     },
+    { label: "Department", value: teacher.department || teacher.subject },
+    { label: "Position", value: teacher.position },
     { label: "Reporting to", value: teacher.reportingTo },
-    {
-      label: "Subjects taught",
-      value:
-        teacher.subjectsTaught ||
-        teacher.subject ||
-        (Array.isArray(teacher.subjects) ? teacher.subjects.join(", ") : ""),
-    },
+    { label: "Subjects taught", value: subjects.join(", ") || teacher.subject },
+    { label: "Assigned classes", value: classes.join(", ") },
+    { label: "Class teacher of", value: teacher.classTeacherOf },
   ];
 
   return (
@@ -326,11 +357,14 @@ function EmploymentSummary({ teacher }) {
   );
 }
 
+/* ---------- Page ---------- */
+
 export default function TeacherProfile() {
   const { user } = useAuth();
 
   const [teacher, setTeacher] = useState(emptyTeacher);
   const [originalTeacher, setOriginalTeacher] = useState(emptyTeacher);
+  const [studentCount, setStudentCount] = useState(0);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -376,13 +410,20 @@ export default function TeacherProfile() {
           office: profile.office || "",
           department: profile.department || "",
           employmentType: profile.employmentType || "",
-          assignedClasses: Array.isArray(profile.assignedClasses)
-            ? profile.assignedClasses
-            : [],
+          subjectsTaught: toList(profile.subjectsTaught),
+          assignedClasses: toList(profile.assignedClasses),
         };
 
         setTeacher(loadedTeacher);
         setOriginalTeacher(loadedTeacher);
+
+        // Count the students in this teacher's assigned classes
+        try {
+          const students = await getAssignedStudents(loadedTeacher);
+          if (active) setStudentCount(students.length);
+        } catch (countError) {
+          console.error("Could not count assigned students:", countError);
+        }
       } catch (err) {
         console.error("Error loading teacher profile:", err);
 
@@ -443,15 +484,13 @@ export default function TeacherProfile() {
     setNotice("");
 
     try {
-      // Save only the profile fields that the teacher can edit.
+      // Teachers can only edit their personal details.
+      // Department, subjects and classes are assigned by the admin.
       const teacherData = {
         fullName: teacher.fullName.trim(),
         dateOfBirth: teacher.dateOfBirth,
         phoneNumber: teacher.phoneNumber.trim(),
         office: teacher.office.trim(),
-        department: teacher.department.trim(),
-        employmentType: teacher.employmentType.trim(),
-        subjectsTaught: teacher.subjectsTaught.trim(),
       };
 
       await updateTeacherProfile(user.uid, teacherData);
@@ -553,8 +592,8 @@ export default function TeacherProfile() {
 
         <div className="teacher-profile-layout">
           <div className="teacher-profile-left-column">
-            <TeacherOverview teacher={teacher} />
-            <Qualifications />
+            <TeacherOverview teacher={teacher} studentCount={studentCount} />
+            <Qualifications teacher={teacher} />
           </div>
 
           <div className="teacher-profile-right-column">

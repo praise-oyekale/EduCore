@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 
 function LoginForm() {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -111,9 +111,9 @@ function LoginForm() {
       </div>
 
       <button className="loggin-btn" type="submit">
-        {loading ? "Loging in...": "login in securely"}
+        {loading ? <Loader text = "loging you in..." />: "log in securely"}
       </button>
-      {loading && <Loader text = "signin you in..." /> }
+      {/* {loading &&  } */}
     </form>
     </>
   );

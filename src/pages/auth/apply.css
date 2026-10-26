@@ -1,0 +1,96 @@
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;    
+    min-height: 100vh;    
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: inherit; 
+    position: absolute;   
+    top: 0;
+    left: 0;
+}
+
+.signup-contents {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    
+    height: 85vh; 
+    overflow: hidden; 
+    background-color: transparent; 
+}
+
+.signup-pagewelcome {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+
+.signup-details {
+    text-align: center;
+    padding: 40px 30px 90px 30px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+
+.signup-details::-webkit-scrollbar {
+    width: 6px;
+}
+.signup-details::-webkit-scrollbar-track {
+    background: transparent; 
+}
+.signup-details::-webkit-scrollbar-thumb {
+    background-color: #334155; 
+    border-radius: 10px;
+}
+.signup-details::-webkit-scrollbar-thumb:hover {
+    background-color: #475569; 
+}
+
+.signup-details h1 {
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman";
+    font-size: 32px;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+
+.signup-details p {
+    font-size: 15px;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman";
+    color: #94a3b8;
+    margin-bottom: 30px;
+}
+
+.signup-details a {
+    color: #f69919;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 900px){
+    .signup-contents{
+        display: block;
+    }
+    .signup-pagewelcome{
+        display: none;
+    }
+}
+@media (max-width: 768px){
+    .signup-details h1{
+        font-size: 30px;
+    }
+    .signup-details p{
+        font-size: 13px;
+    }
+}

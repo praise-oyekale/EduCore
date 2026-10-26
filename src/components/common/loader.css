@@ -3,6 +3,10 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    text-align: center;
+}
+.loader-container h5{
+    color:  #362b1a;
 }
 
 .loader {

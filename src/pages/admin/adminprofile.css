@@ -1,0 +1,512 @@
+.admin-profile-page {
+  min-height: 100vh;
+  background: #f4f6f9;
+  padding: 28px;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: #0b1220;
+  box-sizing: border-box;
+}
+
+.admin-profile-page *,
+.admin-profile-page *::before,
+.admin-profile-page *::after {
+  box-sizing: border-box;
+}
+
+.admin-profile-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+
+.admin-profile-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin-profile-page-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0b1220;
+}
+
+.admin-profile-page-title p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-profile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-profile-secondary-button,
+.admin-profile-primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.admin-profile-secondary-button {
+  background: #ffffff;
+  color: #0b1220;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-profile-secondary-button:hover {
+  background: #f9fafb;
+}
+
+.admin-profile-primary-button {
+  background: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.admin-profile-primary-button:hover {
+  background: #1d4ed8;
+}
+
+.admin-profile-primary-button:disabled,
+.admin-profile-save-button:disabled,
+.admin-profile-cancel-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.admin-profile-secondary-button svg,
+.admin-profile-primary-button svg {
+  font-size: 13px;
+}
+
+/* ---------- Notices ---------- */
+
+.admin-profile-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 14px;
+}
+
+.admin-profile-error-notice {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.admin-profile-notice button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ---------- Layout ---------- */
+
+.admin-profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-profile-left-column,
+.admin-profile-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ---------- Card ---------- */
+
+.admin-profile-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.admin-profile-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.admin-profile-card-heading h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+/* ---------- Overview ---------- */
+
+.admin-overview-card {
+  padding: 24px 20px 0;
+}
+
+.admin-profile-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.admin-profile-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 22px;
+  background: #060b1a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.admin-profile-identity h2 {
+  margin: 14px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+.admin-profile-staff-id {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.admin-profile-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.admin-profile-title-tag,
+.admin-profile-employment-tag {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-profile-title-tag {
+  background: #060b1a;
+  color: #ffffff;
+}
+
+.admin-profile-employment-tag {
+  background: #ecfdf3;
+  color: #15803d;
+}
+
+.admin-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #e5e7eb;
+  padding: 16px 0 18px;
+  text-align: center;
+}
+
+.admin-profile-stat strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+.admin-profile-stat span {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ---------- Access & permissions ---------- */
+
+.admin-access-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-access-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.admin-access-item + .admin-access-item {
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-access-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.admin-access-icon.blue {
+  background: #eef2ff;
+  color: #2563eb;
+}
+
+.admin-access-icon.purple {
+  background: #f3effe;
+  color: #7c3aed;
+}
+
+.admin-access-details h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+.admin-access-details p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ---------- Personal information ---------- */
+
+.admin-profile-edit-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.admin-profile-edit-link:hover {
+  text-decoration: underline;
+}
+
+.admin-profile-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-profile-cancel-button,
+.admin-profile-save-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-profile-cancel-button {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-profile-save-button {
+  background: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.admin-profile-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+}
+
+.admin-profile-office-field {
+  grid-column: 1 / -1;
+}
+
+.admin-profile-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b1220;
+}
+
+.admin-profile-field input,
+.admin-profile-field-value {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1f2937;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.admin-profile-field input {
+  outline: none;
+}
+
+.admin-profile-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ---------- Employment summary ---------- */
+
+.admin-employment-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-employment-table-header,
+.admin-employment-row {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-employment-table-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #9ca3af;
+}
+
+.admin-employment-row {
+  padding: 13px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+}
+
+.admin-employment-row:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.admin-employment-label {
+  color: #9ca3af;
+}
+
+.admin-employment-value {
+  color: #0b1220;
+  font-weight: 500;
+}
+
+/* ---------- Loading / error ---------- */
+
+.admin-profile-loading,
+.admin-profile-error {
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 28px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-profile-error h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #b91c1c;
+}
+
+.admin-profile-error p {
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 980px) {
+  .admin-profile-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-profile-page {
+    padding: 16px;
+  }
+
+  .admin-profile-page-header {
+    flex-direction: column;
+  }
+
+  .admin-profile-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-profile-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}

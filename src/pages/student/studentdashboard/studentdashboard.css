@@ -56,7 +56,7 @@
   width: 100px;
 }
 
-.statcard-section {
+.statcard-section { 
   padding: 30px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -94,6 +94,22 @@ color: black;
 
 .course-progress-titles h5{
     color: #2563eb;
+}
+
+.course-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px 16px;
+  margin: 8px 0;
+  border: 1px dashed #d9d6ee;
+  border-radius: 14px;
+  background: #faf9ff;
+  color: #7774a7;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 .course-math-container{
     display: flex;

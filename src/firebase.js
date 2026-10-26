@@ -1,5 +1,5 @@
 // Step A: Import functions from the Firebase package you installed
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -13,6 +13,12 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+const secondaryApp =
+  getApps().find((a) => a.name === "secondary") ||
+  initializeApp(firebaseConfig, "secondary");
+
+export const secondaryAuth = getAuth(secondaryApp)
 
 // Step C: Turn on Firebase for your app
 const app = initializeApp(firebaseConfig);

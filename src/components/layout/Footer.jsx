@@ -1,7 +1,11 @@
 import "../layout/footer.css";
 import mySchoolLogo from "../../assets/images/smslogo.png";
+import { Link } from "react-router-dom";
 
 function Footer() {
+   const currentYear = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+  });
   return (
     <div className="footer">
       <div className="footer-contents">
@@ -10,20 +14,20 @@ function Footer() {
             <img src={mySchoolLogo} alt="footer-logo" className="footer-logo" />
             <p>
               A centralized platform connecting students, teachers and
-              administrators — making everyday school activities easier to
+              administrators  making everyday school activities easier to
               manage.
             </p>
           </div>
 
           <div className="footer-first-second">
             <h4>PLATFORM</h4>
-            <p>Admin Login</p>
-            <p>Teacher Login</p>
-            <p>Parent Login</p>
+            <p><Link to="/login">Admin Login</Link></p>
+           <p><Link to="/login">Teacher Login</Link></p>
+            <p><Link to="/login">Student Login</Link></p>
           </div>
           <div className="footer-first-third">
             <h4>COMPANY</h4>
-            <p>About Us</p>
+            <p> <a href="#feature-cards"> About Us </a></p>
             <p>Contact</p>
           </div>
           <div className="footer-first-third">
@@ -36,7 +40,7 @@ function Footer() {
         <div className="footer-second">
             <div className="footer-second-divisor"></div>
             <div className="footer-second-texts">
-                <p>© 2026 EDUCORE School Management Platform</p>
+                <p>© {currentYear} EDUCORE School Management Platform</p>
                 <p>Built with ❤️ for education in Africa</p>
             </div>
         </div>

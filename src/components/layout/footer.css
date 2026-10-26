@@ -5,7 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  width: 100%;
+} 
 
 .footer-contents {
   display: grid;
@@ -83,4 +84,15 @@
     color: #645f57;
     font-size: 13px;
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman";
+}
+
+@media (max-width: 784px) {
+    .footer-first{
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .footer-logo{
+      display: none;
+    }
 }

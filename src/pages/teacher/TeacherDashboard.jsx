@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
   FaUsers,
@@ -7,154 +7,27 @@ import {
   FaCalendarCheck,
   FaPlus,
   FaClock,
-  FaArrowUp,
   FaTasks,
   FaBullhorn,
   FaChartPie,
   FaFlask,
   FaGraduationCap,
-  FaCheckCircle,
   FaExclamationCircle,
   FaBookOpen,
   FaArrowRight,
 } from "react-icons/fa";
 
+import {
+  getTeacherDashboardData,
+  getTeacherProfile,
+} from "../../services/teacherService";
+import { getRecentAnnouncements } from "../../services/adminService";
+
 import "../teacher/teacherdashboard.css";
+import { useNavigate } from "react-router-dom";
 
-
-const mockStats = [
-  {
-    title: "Total Students",
-    value: "124",
-    change: "+8 this month",
-    icon: <FaUsers />,
-    color: "blue",
-  },
-  {
-    title: "My Classes",
-    value: "6",
-    change: "Across 3 levels",
-    icon: <FaChalkboardTeacher />,
-    color: "purple",
-  },
-  {
-    title: "Pending Grading",
-    value: "18",
-    change: "Needs your attention",
-    icon: <FaInbox />,
-    color: "orange",
-  },
-  {
-    title: "Attendance Today",
-    value: "94%",
-    change: "+2.5% this week",
-    icon: <FaCalendarCheck />,
-    color: "green",
-  },
-];
-
-const mockSubmissions = [
-  {
-    id: 1,
-    student: "Daniel Johnson",
-    initials: "DJ",
-    assignment: "Quadratic Equations",
-    subject: "Mathematics",
-    submitted: "10 minutes ago",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    student: "Sarah Williams",
-    initials: "SW",
-    assignment: "Chemical Bonding",
-    subject: "Chemistry",
-    submitted: "35 minutes ago",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    student: "Michael Ade",
-    initials: "MA",
-    assignment: "Algebra Practice",
-    subject: "Mathematics",
-    submitted: "1 hour ago",
-    status: "Reviewed",
-  },
-  {
-    id: 4,
-    student: "Grace Okafor",
-    initials: "GO",
-    assignment: "Atomic Structure",
-    subject: "Chemistry",
-    submitted: "2 hours ago",
-    status: "Pending",
-  },
-];
-
-const mockSchedule = [
-  {
-    id: 1,
-    time: "09:00 AM",
-    endTime: "10:00 AM",
-    subject: "Mathematics",
-    className: "SS2 Science",
-    room: "Room 204",
-    color: "blue",
-  },
-  {
-    id: 2,
-    time: "11:00 AM",
-    endTime: "12:00 PM",
-    subject: "Further Mathematics",
-    className: "SS3 Science",
-    room: "Room 108",
-    color: "purple",
-  },
-  {
-    id: 3,
-    time: "01:00 PM",
-    endTime: "02:00 PM",
-    subject: "Mathematics",
-    className: "SS1 Science",
-    room: "Room 201",
-    color: "green",
-  },
-];
-
-const mockPerformance = [
-  { subject: "Mathematics", score: 82, color: "#2563eb" },
-  { subject: "Chemistry", score: 74, color: "#7c3aed" },
-  { subject: "Further Maths", score: 68, color: "#0d9488" },
-  { subject: "Physics", score: 88, color: "#ea580c" },
-];
-
-const mockAnnouncements = [
-  {
-    id: 1,
-    title: "Staff Meeting",
-    description:
-      "All teachers are expected to attend the staff meeting in the conference room.",
-    date: "Today",
-    type: "important",
-  },
-  {
-    id: 2,
-    title: "Mid-term Assessment",
-    description:
-      "Please ensure your assessment questions are ready before the deadline.",
-    date: "Tomorrow",
-    type: "normal",
-  },
-  {
-    id: 3,
-    title: "Results Submission",
-    description:
-      "Submit outstanding student results through the school portal.",
-    date: "Friday",
-    type: "normal",
-  },
-];
+const SUBJECT_COLORS = ["#2563eb", "#7c3aed", "#0d9488", "#ea580c", "#db2777"];
+const CLASS_COLORS = ["blue", "purple", "green"];
 
 const quickActions = [
   {
@@ -183,6 +56,62 @@ const quickActions = [
   },
 ];
 
+/* ---------- Helpers ---------- */
+
+function getInitials(name = "") {
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase() || "S"
+  );
+}
+
+function toList(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+function timeAgo(value) {
+  if (!value) return "Recently";
+
+  const ms =
+    typeof value === "number"
+      ? value
+      : typeof value?.toMillis === "function"
+        ? value.toMillis()
+        : typeof value?.seconds === "number"
+          ? value.seconds * 1000
+          : new Date(value).getTime();
+
+  if (!Number.isFinite(ms)) return "Recently";
+
+  const mins = Math.max(0, Math.floor((Date.now() - ms) / 60000));
+  if (mins < 60) return `${Math.max(1, mins)} min ago`;
+
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hour${hrs === 1 ? "" : "s"} ago`;
+
+  const days = Math.floor(hrs / 24);
+  return days === 1 ? "Yesterday" : `${days} days ago`;
+}
+
+function EmptyState({ children }) {
+  return <div className="teacher-empty">{children}</div>;
+}
+
+/* ---------- Pieces ---------- */
+
 function SectionHeading({ title, subtitle, action, onAction }) {
   return (
     <div className="teacher-section-heading">
@@ -209,10 +138,6 @@ function StatCard({ stat }) {
     <article className="teacher-stat-card">
       <div className="teacher-stat-top">
         <div className={`teacher-stat-icon ${stat.color}`}>{stat.icon}</div>
-
-        <span className="teacher-stat-indicator">
-          <FaArrowUp />
-        </span>
       </div>
 
       <p className="teacher-stat-title">{stat.title}</p>
@@ -222,52 +147,47 @@ function StatCard({ stat }) {
   );
 }
 
-function SubmissionStatus({ status }) {
-  const reviewed = status === "Reviewed";
-
-  return (
-    <span className={`teacher-status ${reviewed ? "reviewed" : "pending"}`}>
-      {reviewed ? <FaCheckCircle /> : <FaClock />}
-      {status}
-    </span>
-  );
-}
-
-function GradingQueue({ onViewAll }) {
+function AwaitingScores({ items, onViewAll }) {
   return (
     <section className="teacher-card teacher-grading-card">
       <SectionHeading
-        title="Recent Submissions"
-        subtitle="Review your students' latest work"
+        title="Awaiting Scores"
+        subtitle="Students with no score yet in your subjects"
         action="View all"
         onAction={onViewAll}
       />
 
-      <div className="teacher-submissions-list">
-        {mockSubmissions.map((submission) => (
-          <div className="teacher-submission" key={submission.id}>
-            <div className="teacher-student-avatar">{submission.initials}</div>
+      {items.length === 0 ? (
+        <EmptyState>Every student in your subjects has a score.</EmptyState>
+      ) : (
+        <div className="teacher-submissions-list">
+          {items.map((item) => (
+            <div className="teacher-submission" key={item.id}>
+              <div className="teacher-student-avatar">
+                {getInitials(item.student)}
+              </div>
 
-            <div className="teacher-submission-info">
-              <h3>{submission.student}</h3>
-              <p>{submission.assignment}</p>
-              <span>{submission.subject}</span>
-            </div>
+              <div className="teacher-submission-info">
+                <h3>{item.student}</h3>
+                <p>{item.subject}</p>
+                <span>{item.className || "Class not set"}</span>
+              </div>
 
-            <div className="teacher-submission-right">
-              <SubmissionStatus status={submission.status} />
-              <span className="teacher-submission-time">
-                {submission.submitted}
-              </span>
+              <div className="teacher-submission-right">
+                <span className="teacher-status pending">
+                  <FaClock />
+                  Pending
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
-function ClassPerformance() {
+function ClassPerformance({ performance, overallAverage }) {
   return (
     <section className="teacher-card teacher-performance-card">
       <SectionHeading
@@ -275,75 +195,91 @@ function ClassPerformance() {
         subtitle="Average scores by subject"
       />
 
-      <div className="teacher-performance-summary">
-        <div>
-          <span>Overall average</span>
-          <h3>78%</h3>
-        </div>
-
-        <div className="teacher-performance-badge">
-          <FaArrowUp />
-          4.8%
-        </div>
-      </div>
-
-      <div className="teacher-performance-list">
-        {mockPerformance.map((item) => (
-          <div className="teacher-performance-item" key={item.subject}>
-            <div className="teacher-performance-label">
-              <span>{item.subject}</span>
-              <strong>{item.score}%</strong>
-            </div>
-
-            <div className="teacher-progress-track">
-              <div
-                className="teacher-progress-fill"
-                style={{
-                  width: `${item.score}%`,
-                  backgroundColor: item.color,
-                }}
-              />
+      {performance.length === 0 ? (
+        <EmptyState>
+          No scores have been recorded yet. Averages will appear here once
+          results are entered.
+        </EmptyState>
+      ) : (
+        <>
+          <div className="teacher-performance-summary">
+            <div>
+              <span>Overall average</span>
+              <h3>{overallAverage}%</h3>
             </div>
           </div>
-        ))}
-      </div>
 
-      <p className="teacher-demo-note">
-        <FaExclamationCircle />
-        Sample data for demonstration. Connect real student results later.
-      </p>
+          <div className="teacher-performance-list">
+            {performance.map((item, index) => (
+              <div className="teacher-performance-item" key={item.subject}>
+                <div className="teacher-performance-label">
+                  <span>{item.subject}</span>
+                  <strong>{item.score}%</strong>
+                </div>
+
+                <div className="teacher-progress-track">
+                  <div
+                    className="teacher-progress-fill"
+                    style={{
+                      width: `${Math.min(item.score, 100)}%`,
+                      backgroundColor:
+                        SUBJECT_COLORS[index % SUBJECT_COLORS.length],
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
 
-function TodaysSchedule({ onViewAll }) {
+function MyClasses({ classes, subjects, onViewAll }) {
+  const navigate = useNavigate();
   return (
     <section className="teacher-card teacher-schedule-card">
       <SectionHeading
-        title="Today's Schedule"
-        subtitle="Your classes for today"
-        action="Full timetable"
-        onAction={onViewAll}
+        title="My Classes"
+        subtitle="Classes assigned to you"
+        action="View students"
+        onAction={() => navigate("/teacher/classes")}
       />
 
-      <div className="teacher-schedule-list">
-        {mockSchedule.map((item) => (
-          <div className="teacher-schedule-item" key={item.id}>
-            <div className={`teacher-schedule-line ${item.color}`} />
+      {classes.length === 0 ? (
+        <EmptyState>
+          No classes have been assigned to you yet. Please contact the admin.
+        </EmptyState>
+      ) : (
+        <div className="teacher-schedule-list">
+          {classes.map((item, index) => (
+            <div className="teacher-schedule-item" key={item.name}>
+              <div
+                className={`teacher-schedule-line ${CLASS_COLORS[index % CLASS_COLORS.length]}`}
+              />
 
-            <div className="teacher-schedule-time">
-              <strong>{item.time}</strong>
-              <span>{item.endTime}</span>
-            </div>
+              <div className="teacher-schedule-time">
+                <strong>{item.name}</strong>
+                <span>
+                  {item.students} student{item.students === 1 ? "" : "s"}
+                </span>
+              </div>
 
-            <div className="teacher-schedule-details">
-              <h3>{item.subject}</h3>
-              <p>{item.className}</p>
-              <span>{item.room}</span>
+              <div className="teacher-schedule-details">
+                <h3>
+                  {subjects.length ? subjects.join(", ") : "All subjects"}
+                </h3>
+                <p>
+                  {item.isClassTeacher
+                    ? "You are the class teacher"
+                    : "Subject teacher"}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -381,7 +317,7 @@ function QuickActions({ onAction }) {
   );
 }
 
-function Announcements({ onViewAll }) {
+function Announcements({ announcements, onViewAll }) {
   return (
     <section className="teacher-card teacher-announcements-card">
       <SectionHeading
@@ -391,33 +327,149 @@ function Announcements({ onViewAll }) {
         onAction={onViewAll}
       />
 
-      <div className="teacher-announcements-list">
-        {mockAnnouncements.map((announcement) => (
-          <article className="teacher-announcement" key={announcement.id}>
-            <div className={`teacher-announcement-icon ${announcement.type}`}>
-              <FaBullhorn />
-            </div>
-
-            <div className="teacher-announcement-content">
-              <div className="teacher-announcement-heading">
-                <h3>{announcement.title}</h3>
-                <span>{announcement.date}</span>
+      {announcements.length === 0 ? (
+        <EmptyState>No announcements have been published yet.</EmptyState>
+      ) : (
+        <div className="teacher-announcements-list">
+          {announcements.map((announcement) => (
+            <article className="teacher-announcement" key={announcement.id}>
+              <div
+                className={`teacher-announcement-icon ${
+                  announcement.type === "important" ? "important" : "normal"
+                }`}
+              >
+                <FaBullhorn />
               </div>
 
-              <p>{announcement.description}</p>
-            </div>
-          </article>
-        ))}
-      </div>
+              <div className="teacher-announcement-content">
+                <div className="teacher-announcement-heading">
+                  <h3>{announcement.title || "School announcement"}</h3>
+                  <span>{timeAgo(announcement.createdAt)}</span>
+                </div>
+
+                {(announcement.description || announcement.message) && (
+                  <p>{announcement.description || announcement.message}</p>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
+/* ---------- Page ---------- */
+
 export default function TeacherDashboard() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
+
+  const [teacher, setTeacher] = useState(null);
+  const [data, setData] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
-  const teacherName = profile?.fullName?.trim()?.split(" ")[0] || "Teacher";
+  useEffect(() => {
+    let active = true;
+
+    async function loadDashboard() {
+      if (!user?.uid) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError("");
+
+      try {
+        const profile = await getTeacherProfile(user.uid);
+
+        if (!active) return;
+        setTeacher(profile);
+
+        const [dashboardData, recentAnnouncements] = await Promise.all([
+          getTeacherDashboardData(profile || {}),
+          getRecentAnnouncements(3).catch(() => []),
+        ]);
+
+        if (!active) return;
+        setData(dashboardData);
+        setAnnouncements(recentAnnouncements);
+      } catch (err) {
+        console.error("Failed to load teacher dashboard:", err);
+
+        if (active) {
+          setError(
+            "We couldn't load your dashboard data. Please check your connection and try again.",
+          );
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadDashboard();
+
+    return () => {
+      active = false;
+    };
+  }, [user?.uid]);
+
+  const firstName = teacher?.fullName?.trim()?.split(" ")[0] || "Teacher";
+  const greetingName = [teacher?.title, firstName].filter(Boolean).join(" ");
+
+  const subjects = toList(teacher?.subjectsTaught);
+  const classes = data?.classes || [];
+
+  const levels = [
+    ...new Set(
+      classes.map((c) =>
+        c.name.startsWith("JSS")
+          ? "JSS"
+          : c.name.startsWith("SSS")
+            ? "SSS"
+            : "Other",
+      ),
+    ),
+  ];
+
+  const stats = [
+    {
+      title: "Total Students",
+      value: String(data?.studentCount ?? 0),
+      change: classes.length
+        ? "In your assigned classes"
+        : "No classes assigned yet",
+      icon: <FaUsers />,
+      color: "blue",
+    },
+    {
+      title: "My Classes",
+      value: String(classes.length),
+      change: levels.length ? levels.join(" & ") : "None assigned",
+      icon: <FaChalkboardTeacher />,
+      color: "purple",
+    },
+    {
+      title: "Awaiting Scores",
+      value: String(data?.pendingCount ?? 0),
+      change: data?.pendingCount ? "Needs your attention" : "All caught up",
+      icon: <FaInbox />,
+      color: "orange",
+    },
+    {
+      title: "Attendance Today",
+      value: data?.attendanceRate == null ? "—" : `${data.attendanceRate}%`,
+      change:
+        data?.attendanceRate == null
+          ? "Not recorded yet today"
+          : `${data.attendanceRecorded} students marked`,
+      icon: <FaCalendarCheck />,
+      color: "green",
+    },
+  ];
 
   const today = new Date().toLocaleDateString("en-NG", {
     weekday: "long",
@@ -432,6 +484,16 @@ export default function TeacherDashboard() {
     );
   }
 
+  if (loading) {
+    return (
+      <main className="teacher-dashboard">
+        <div className="teacher-dashboard-container">
+          <div className="teacher-empty">Loading your dashboard...</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="teacher-dashboard">
       <div className="teacher-dashboard-container">
@@ -439,7 +501,7 @@ export default function TeacherDashboard() {
           <div className="teacher-welcome-content">
             <span className="teacher-welcome-label">TEACHER PORTAL</span>
 
-            <h1>Welcome back, Dr. {teacherName}!</h1>
+            <h1>Welcome back, {greetingName}!</h1>
 
             <p>Here is what is happening with your classes today.</p>
 
@@ -462,13 +524,20 @@ export default function TeacherDashboard() {
           </div>
         </header>
 
-        {user?.role && user.role !== "teacher" && (
+        {teacher?.role && teacher.role !== "teacher" && (
           <div className="teacher-role-notice">
             <FaExclamationCircle />
             <p>
-              Your current role is <strong>{user.role}</strong>. This dashboard
-              is intended for teacher accounts.
+              Your current role is <strong>{teacher.role}</strong>. This
+              dashboard is intended for teacher accounts.
             </p>
+          </div>
+        )}
+
+        {error && (
+          <div className="teacher-role-notice">
+            <FaExclamationCircle />
+            <p>{error}</p>
           </div>
         )}
 
@@ -486,21 +555,34 @@ export default function TeacherDashboard() {
         )}
 
         <section className="teacher-stats-grid">
-          {mockStats.map((stat) => (
+          {stats.map((stat) => (
             <StatCard stat={stat} key={stat.title} />
           ))}
         </section>
 
         <div className="teacher-dashboard-grid">
-          <GradingQueue onViewAll={() => handleAction("All submissions")} />
+          <AwaitingScores
+            items={data?.pending || []}
+            onViewAll={() => handleAction("All students awaiting scores")}
+          />
 
-          <ClassPerformance />
+          <ClassPerformance
+            performance={data?.performance || []}
+            overallAverage={data?.overallAverage}
+          />
 
-          <TodaysSchedule onViewAll={() => handleAction("Full timetable")} />
+          <MyClasses
+            classes={classes}
+            subjects={subjects}
+            onViewAll={() => handleAction("Class lists")}
+          />
 
           <QuickActions onAction={handleAction} />
 
-          <Announcements onViewAll={() => handleAction("All announcements")} />
+          <Announcements
+            announcements={announcements}
+            onViewAll={() => handleAction("All announcements")}
+          />
         </div>
 
         <footer className="teacher-dashboard-footer">
@@ -522,4 +604,3 @@ export default function TeacherDashboard() {
     </main>
   );
 }
-

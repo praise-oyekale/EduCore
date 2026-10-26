@@ -7,7 +7,9 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-contents">
-        <Welcome />
+        <div className="loginpage-welcome">
+          <Welcome />
+        </div>
         <div className="login-details">
             <h1>Welcome back</h1>
             <p className="subtopic-login">sign in to continue to your  school portal</p>

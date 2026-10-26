@@ -1,0 +1,410 @@
+.results-page-container {
+  background: #f4f6f9;
+  min-height: 100vh;
+  padding: 32px 28px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.results-header-title h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.results-header-title p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.results-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Term Switcher Pills */
+.term-filter-pills {
+  display: flex;
+  background-color: #e2e8f0;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.term-pill {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.term-pill.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Download Transcript Button */
+.download-transcript-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.download-transcript-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.download-transcript-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 4 Stat Cards Grid */
+.results-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.res-stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.res-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.res-icon-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.gpa-bg {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.rank-bg {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+.grade-bg {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.credit-bg {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.res-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+.res-highlight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #ffedd5;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+.res-status-badge {
+  background-color: #ffedd5;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  text-transform: lowercase;
+}
+
+.res-stat-body h3 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.res-stat-body p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Main Content Split */
+.results-content-split {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .results-content-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Grade Report Table Card */
+.grade-report-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.report-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 12px;
+}
+
+.report-card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.courses-count-text {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.report-table-wrapper {
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  letter-spacing: 0.5px;
+}
+
+.report-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f8fafc;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.course-name-cell {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.score-cell,
+.credits-cell,
+.points-cell {
+  color: #475569;
+  font-weight: 500;
+}
+
+/* Grade Badges */
+.res-grade-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-a {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-b {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-c {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge-d {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.badge-e,
+.badge-f {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Right Column Cards */
+.results-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gpa-trend-card,
+.grade-distribution-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.gpa-trend-card h3,
+.grade-distribution-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+}
+
+.trend-chart-wrapper {
+  margin-top: 8px;
+}
+
+/* Distribution Donut Body */
+.distribution-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.distribution-donut-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.donut-center-hole {
+  width: 58px;
+  height: 58px;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+
+.distribution-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-a {
+  background-color: #16a34a;
+}
+
+.dot-b {
+  background-color: #2563eb;
+}
+
+.dot-c {
+  background-color: #d97706;
+}
+
+.legend-label {
+  font-size: 13px;
+  color: #475569;
+}
+
+.legend-label strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.report-empty-state,
+.chart-empty-state {
+  text-align: center;
+  padding: 30px;
+  color: #94a3b8;
+  font-size: 13px;
+}

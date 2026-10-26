@@ -6,13 +6,15 @@
     height: 100vh;
 }
 .login-contents{
-    width: 65%;
+    width: 75%;
     /* border: 1px solid; */
     display: grid;
     grid-template-columns: 50% 50%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 5px;
+    justify-content: center;
+    align-items: center;
     
 }
 .login-details{
@@ -34,4 +36,20 @@
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman";
     color: grey;
     margin-top: 20px;
+}
+@media (max-width: 1000px){
+    .login-contents{
+        display: block;
+    }
+    .loginpage-welcome{
+        display: none;
+    }
+}
+@media (max-width: 768px){
+    .login-details h1{
+        font-size: 30px;
+    }
+    .login-details p{
+        font-size: 13px;
+    }
 }

@@ -8,8 +8,9 @@ import EditProfileModel from "./EditProfileModal";
 import { academicSummary } from "../../../data/academicSummary";
 export default function StudentProfile() {
   const [student, setStudent] = useState(null);
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const courseLength = profile?.subjects?.length
   useEffect(() => {
     async function loadStudent() {
       if (!user) return;
@@ -48,7 +49,7 @@ export default function StudentProfile() {
               {student?.fullName}
             </h5>
             <p style={{ color: "#9db1c2", fontSize: "13px" }}>
-              Student ID: {student?.id}
+              Student ID: {profile?.studentId}
             </p>
             <div
               style={{
@@ -67,7 +68,7 @@ export default function StudentProfile() {
                   borderRadius: "7px",
                 }}
               >
-                SSS3 · Science
+                {profile?.grade} · {profile?.department}
               </h5>{" "}
               <h5
                 style={{
@@ -77,7 +78,7 @@ export default function StudentProfile() {
                   borderRadius: "7px",
                 }}
               >
-                IN PROGRESS
+                {profile?.status}
               </h5>
             </div>
             <div
@@ -105,7 +106,7 @@ export default function StudentProfile() {
                   justifyContent: "center",
                 }}
               >
-                <h2 style={{ fontWeight: "700" }}>3.78</h2>
+                <h2 style={{ fontWeight: "700" }}>{profile?.gpa}</h2>
                 <h5 style={{ color: "#9db1c2" }}>GPA</h5>
               </div>
               <div
@@ -127,7 +128,7 @@ export default function StudentProfile() {
                   justifyContent: "center",
                 }}
               >
-                <h2>6</h2>
+                <h2>{courseLength}</h2>
                 <h5 style={{ color: "#9db1c2" }}>Courses</h5>
               </div>
             </div>
@@ -155,9 +156,9 @@ export default function StudentProfile() {
                   <FaUser />
                 </span>
                 <div>
-                  <h5>Elena Reyes</h5>
+                  <h5>{profile?.guardianName}</h5>
                   <p style={{ color: "#9db1c2", fontSize: "13px" }}>
-                    Mother · +1 (555) 019-2231
+                    {profile?.guardianPhone}
                   </p>
                 </div>
               </div>
