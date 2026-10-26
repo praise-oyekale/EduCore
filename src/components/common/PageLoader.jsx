@@ -1,6 +1,6 @@
 import React from "react";
 import schoollogo from "../../assets/images/smslogo.png";
-import "./PageLoader.css";
+import "./pageloader.css";
 
 export function PageLoader() {
   return (
