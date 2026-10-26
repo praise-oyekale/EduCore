@@ -124,12 +124,22 @@ export async function getTeacherProfile(uid) {
 }
 
 export async function updateTeacherProfile(uid, teacherData) {
-  if (!uid) throw new Error("Teacher UID is required.");
+  if (!uid) {
+    throw new Error("Teacher UID is required.");
+  }
 
-  await updateDoc(doc(db, TEACHER_COLLECTION, uid), {
-    ...teacherData,
-    updatedAt: serverTimestamp(),
-  });
+  if (!teacherData || typeof teacherData !== "object") {
+    throw new Error("Teacher data must be an object.");
+  }
+
+  await setDoc(
+    doc(db, TEACHER_COLLECTION, uid),
+    {
+      ...teacherData,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
 }
 
 /* ---------- Admin: manage all staff ---------- */

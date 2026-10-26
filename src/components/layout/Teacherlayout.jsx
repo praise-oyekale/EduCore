@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
+
 import { TeacherSidebar } from "../../data/sidebarData";
 import { Sidebar } from "./Sidebar";
-// import Dashboardnavbar from "../common/DashboardNavbar";
-import { useAuth } from "../../context/AuthContext";
-import { Outlet } from "react-router-dom";
-import TeacherDashboardNavbar from "./teacher/TeacherDashboardNav";
-import "../layout/teacherlayout.css"
+import DashboardNavbar from "../common/DashboardNavbar";
+
+import "../layout/teacherlayout.css";
 
 function TeacherLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-   const{user, profile, role} = useAuth();
+
   return (
     <div className="teacher-layout">
       <Sidebar
@@ -17,16 +17,16 @@ function TeacherLayout() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
+
       <div className="main-content">
-        <TeacherDashboardNavbar profile={profile}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen} />
+        <DashboardNavbar setSidebarOpen={setSidebarOpen} />
+
         <main>
-            <Outlet/>
+          <Outlet />
         </main>
       </div>
     </div>
   );
-} 
+}
 
 export default TeacherLayout;

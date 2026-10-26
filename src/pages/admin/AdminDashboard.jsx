@@ -61,40 +61,97 @@ const ANNOUNCEMENT_ICONS = {
   transport: <FaBus />,
 };
 
-const timeAgo = (value) => {
-  if (!value) return "Recently";
-  const ms =
-    typeof value === "number"
-      ? value
-      : typeof value?.toMillis === "function"
-        ? value.toMillis()
-        : typeof value?.seconds === "number"
-          ? value.seconds * 1000
-          : new Date(value).getTime();
+// Convert Firestore timestamps, JavaScript Dates, strings,
+// and numbers into a JavaScript Date.
+const toDate = (value) => {
+  if (!value) return null;
 
-  if (!Number.isFinite(ms)) return "Recently";
-  const mins = Math.max(0, Math.floor((Date.now() - ms) / 60000));
-  if (mins < 60) return `${Math.max(1, mins)} min ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} hour${hrs === 1 ? "" : "s"} ago`;
-  const days = Math.floor(hrs / 24);
-  return days === 1 ? "Yesterday" : `${days} days ago`;
+  let dateValue;
+
+  if (typeof value?.toDate === "function") {
+    dateValue = value.toDate();
+  } else if (typeof value?.seconds === "number") {
+    dateValue = new Date(value.seconds * 1000);
+  } else if (value instanceof Date) {
+    dateValue = value;
+  } else if (typeof value === "number") {
+    dateValue = new Date(value);
+  } else if (typeof value === "string") {
+    dateValue = new Date(value);
+  } else {
+    return null;
+  }
+
+  return Number.isNaN(dateValue.getTime()) ? null : dateValue;
 };
 
 const formatDate = (value) => {
   if (!value) return "Date not set";
-  const parsed = new Date(`${value}T00:00:00`);
-  return Number.isNaN(parsed.getTime())
-    ? value
-    : parsed.toLocaleDateString("en-GB", {
+
+  // A date-only string should not be shifted by timezone conversion.
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split("-").map(Number);
+    const parsed = new Date(year, month - 1, day);
+
+    return parsed.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  const parsed = toDate(value);
+
+  return parsed
+    ? parsed.toLocaleDateString("en-GB", {
         day: "numeric",
         month: "short",
         year: "numeric",
-      });
+      })
+    : "Date not set";
+};
+
+const formatDateTime = (value) => {
+  if (!value) return "Date not set";
+
+  const parsed = toDate(value);
+
+  return parsed
+    ? parsed.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : formatDate(value);
+};
+
+const timeAgo = (value) => {
+  const parsed = toDate(value);
+
+  if (!parsed) return "Recently";
+
+  const mins = Math.max(0, Math.floor((Date.now() - parsed.getTime()) / 60000));
+
+  if (mins < 60) {
+    return `${Math.max(1, mins)} min ago`;
+  }
+
+  const hrs = Math.floor(mins / 60);
+
+  if (hrs < 24) {
+    return `${hrs} hour${hrs === 1 ? "" : "s"} ago`;
+  }
+
+  const days = Math.floor(hrs / 24);
+
+  return days === 1 ? "Yesterday" : `${days} days ago`;
 };
 
 const safeName = (value) => {
-  if (typeof value !== "string" || !value.trim()) return "Applicant";
+  if (typeof value !== "string" || !value.trim()) {
+    return "Applicant";
+  }
+
   return value.trim();
 };
 
@@ -105,6 +162,7 @@ function StatCard({ icon, label, stat, percent, tone, note }) {
     <article className="admin-stat-card">
       <div className="admin-stat-card__top">
         <span className={`admin-stat-card__icon tone-${tone}`}>{icon}</span>
+
         {percent !== undefined && (
           <span className={`admin-stat-card__trend tone-${tone}`}>
             <FaArrowUp aria-hidden="true" />
@@ -112,8 +170,11 @@ function StatCard({ icon, label, stat, percent, tone, note }) {
           </span>
         )}
       </div>
+
       <p className="admin-stat-card__label">{label}</p>
+
       <div className="admin-stat-card__value">{total.toLocaleString()}</div>
+
       <div className="admin-stat-card__foot">
         <span>{note || `Male: ${stat?.m || 0} · Female: ${stat?.f || 0}`}</span>
       </div>
@@ -161,6 +222,7 @@ export default function AdminDashboard() {
         ]);
 
         if (cancelled) return;
+
         setStats(nextStats);
         setHistory(nextHistory);
         setGrades(nextGrades);
@@ -169,6 +231,7 @@ export default function AdminDashboard() {
         setAnnouncements(nextAnnouncements);
       } catch (err) {
         console.error("Failed to load admin dashboard:", err);
+
         if (!cancelled) {
           setError(
             "We couldn't load the dashboard data. Check your Firebase collections and try again.",
@@ -180,6 +243,7 @@ export default function AdminDashboard() {
     }
 
     loadDashboard();
+
     return () => {
       cancelled = true;
     };
@@ -187,7 +251,9 @@ export default function AdminDashboard() {
 
   const attendanceRate = useMemo(() => {
     if (!stats?.enrolled?.total) return 0;
+
     const attended = (stats.present?.total || 0) + (stats.late?.total || 0);
+
     return Math.round((attended / stats.enrolled.total) * 100);
   }, [stats]);
 
@@ -237,14 +303,19 @@ export default function AdminDashboard() {
       .join("\n");
 
     const url = URL.createObjectURL(
-      new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" }),
+      new Blob(["\uFEFF", csv], {
+        type: "text/csv;charset=utf-8;",
+      }),
     );
+
     const anchor = document.createElement("a");
     anchor.href = url;
     anchor.download = `school-dashboard-${date}.csv`;
+
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
+
     URL.revokeObjectURL(url);
   };
 
@@ -253,27 +324,35 @@ export default function AdminDashboard() {
       <section className="admin-welcome">
         <div className="admin-welcome__content">
           <span className="admin-welcome__eyebrow">SCHOOL ADMINISTRATION</span>
+
           <h1>Welcome to your dashboard!</h1>
+
           <p>Here is what is happening across your school today.</p>
+
           <div className="admin-welcome__date">
             <FaCalendarAlt aria-hidden="true" />
             <span>
-              {new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {formatDate(`${date}T00:00:00`) === "Date not set"
+                ? date
+                : new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
             </span>
           </div>
         </div>
+
         <div className="admin-welcome__art" aria-hidden="true">
           <span className="admin-welcome__circle">
             <FaGraduationCap />
           </span>
+
           <span className="admin-welcome__floating admin-welcome__floating--book">
             <FaBookOpen />
           </span>
+
           <span className="admin-welcome__floating admin-welcome__floating--flask">
             <FaFlask />
           </span>
@@ -283,13 +362,16 @@ export default function AdminDashboard() {
       <div className="admin-dash__toolbar">
         <div>
           <h2 className="admin-section-heading">School overview</h2>
+
           <p className="admin-section-subtitle">
             A snapshot of attendance and school activity.
           </p>
         </div>
+
         <div className="admin-toolbar__actions">
           <label className="admin-date-control">
             <span>Select date</span>
+
             <input
               type="date"
               value={date}
@@ -297,12 +379,14 @@ export default function AdminDashboard() {
               onChange={(event) => setDate(event.target.value)}
             />
           </label>
+
           <button
             className="admin-export-btn"
             onClick={handleExport}
             disabled={!stats}
           >
-            <FaDownload aria-hidden="true" /> Export report
+            <FaDownload aria-hidden="true" />
+            Export report
           </button>
         </div>
       </div>
@@ -312,6 +396,7 @@ export default function AdminDashboard() {
           {error}
         </div>
       )}
+
       {loading && !stats ? (
         <div className="admin-loading">Loading your school overview…</div>
       ) : (
@@ -329,6 +414,7 @@ export default function AdminDashboard() {
                   tone="blue"
                   note="Currently enrolled"
                 />
+
                 <StatCard
                   icon={<FaUserCheck />}
                   label="Present"
@@ -337,6 +423,7 @@ export default function AdminDashboard() {
                   tone="green"
                   note="Marked present"
                 />
+
                 <StatCard
                   icon={<FaUserTimes />}
                   label="Absent"
@@ -345,6 +432,7 @@ export default function AdminDashboard() {
                   tone="red"
                   note="Marked absent"
                 />
+
                 <StatCard
                   icon={<FaClock />}
                   label="Late arrivals"
@@ -353,6 +441,7 @@ export default function AdminDashboard() {
                   tone="yellow"
                   note="Arrived late"
                 />
+
                 <StatCard
                   icon={<FaExclamationTriangle />}
                   label="5+ absences"
@@ -361,6 +450,7 @@ export default function AdminDashboard() {
                   tone="orange"
                   note="Needs follow-up"
                 />
+
                 <StatCard
                   icon={<FaUserMinus />}
                   label="NLS"
@@ -369,6 +459,7 @@ export default function AdminDashboard() {
                   tone="purple"
                   note="Not currently enrolled"
                 />
+
                 <StatCard
                   icon={<FaSignInAlt />}
                   label="Transferred in"
@@ -377,6 +468,7 @@ export default function AdminDashboard() {
                   tone="indigo"
                   note="Joined from another school"
                 />
+
                 <StatCard
                   icon={<FaSignOutAlt />}
                   label="Transferred out"
@@ -391,16 +483,22 @@ export default function AdminDashboard() {
                 <div className="admin-attendance-summary__icon">
                   <FaClipboardCheck />
                 </div>
+
                 <div className="admin-attendance-summary__copy">
                   <span>Attendance rate</span>
                   <strong>{attendanceRate}%</strong>
                   <small>Present or late compared with enrolled students</small>
                 </div>
+
                 <div
                   className="admin-attendance-summary__meter"
                   aria-label={`${attendanceRate}% attendance`}
                 >
-                  <div style={{ width: `${Math.min(100, attendanceRate)}%` }} />
+                  <div
+                    style={{
+                      width: `${Math.min(100, attendanceRate)}%`,
+                    }}
+                  />
                 </div>
               </section>
             </>
@@ -412,22 +510,30 @@ export default function AdminDashboard() {
                 <h2>School year attendance overview</h2>
                 <p>Daily number of students marked present</p>
               </div>
+
               <span className="admin-panel__heading-icon">
                 <FaChartLine />
               </span>
             </div>
+
             <div className="admin-chart">
               {chartData.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={chartData}
-                    margin={{ top: 12, right: 14, left: -12, bottom: 4 }}
+                    margin={{
+                      top: 12,
+                      right: 14,
+                      left: -12,
+                      bottom: 4,
+                    }}
                   >
                     <CartesianGrid
                       strokeDasharray="4 4"
                       stroke="#e8edf5"
                       vertical={false}
                     />
+
                     <XAxis
                       dataKey="label"
                       tick={{ fontSize: 11, fill: "#718096" }}
@@ -435,12 +541,14 @@ export default function AdminDashboard() {
                       tickLine={false}
                       minTickGap={20}
                     />
+
                     <YAxis
                       allowDecimals={false}
                       tick={{ fontSize: 11, fill: "#718096" }}
                       axisLine={false}
                       tickLine={false}
                     />
+
                     <Tooltip
                       contentStyle={{
                         border: "1px solid #e2e8f0",
@@ -448,13 +556,18 @@ export default function AdminDashboard() {
                         boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
                       }}
                     />
+
                     <Line
                       type="monotone"
                       dataKey="present"
                       name="Students present"
                       stroke="#3568dc"
                       strokeWidth={2.5}
-                      dot={{ r: 2.5, fill: "#3568dc", strokeWidth: 0 }}
+                      dot={{
+                        r: 2.5,
+                        fill: "#3568dc",
+                        strokeWidth: 0,
+                      }}
                       activeDot={{ r: 5 }}
                     />
                   </LineChart>
@@ -472,10 +585,12 @@ export default function AdminDashboard() {
                   <h2>Recent admissions</h2>
                   <p>Latest applications received</p>
                 </div>
+
                 <a href="/admin/admissions" className="admin-text-link">
                   View all <span>→</span>
                 </a>
               </div>
+
               {admissions.length ? (
                 <div className="admin-table-wrap">
                   <table className="admin-table">
@@ -487,9 +602,11 @@ export default function AdminDashboard() {
                         <th>Status</th>
                       </tr>
                     </thead>
+
                     <tbody>
                       {admissions.map((admission) => {
                         const fullName = safeName(admission.fullName);
+
                         const initials = fullName
                           .split(/\s+/)
                           .map((word) => word[0])
@@ -497,26 +614,42 @@ export default function AdminDashboard() {
                           .slice(0, 2)
                           .toUpperCase();
 
+                        // Convert Firestore timestamps before rendering.
+                        const submittedDate = formatDateTime(
+                          admission.submittedAt || admission.createdAt,
+                        );
+
                         return (
                           <tr key={admission.id}>
                             <td>
                               <div className="admin-applicant">
                                 <span className="admin-avatar">{initials}</span>
+
                                 <strong>{fullName}</strong>
                               </div>
                             </td>
+
                             <td>
-                              {admission.gradeApplied || "—"}
+                              {typeof admission.gradeApplied === "string"
+                                ? admission.gradeApplied
+                                : "—"}
                             </td>
-                            <td>
-                              {admission.submittedAt ||
-                                formatDate(admission.createdAt)}
-                            </td>
+
+                            <td>{submittedDate}</td>
+
                             <td>
                               <span
-                                className={`admin-badge admin-badge--${String(admission.status || "pending").toLowerCase() === "accepted" ? "green" : "amber"}`}
+                                className={`admin-badge admin-badge--${
+                                  String(
+                                    admission.status || "pending",
+                                  ).toLowerCase() === "accepted"
+                                    ? "green"
+                                    : "amber"
+                                }`}
                               >
-                                {admission.status || "Pending"}
+                                {typeof admission.status === "string"
+                                  ? admission.status
+                                  : "Pending"}
                               </span>
                             </td>
                           </tr>
@@ -537,6 +670,7 @@ export default function AdminDashboard() {
                   <p>Present or late for {formatDate(date)}</p>
                 </div>
               </div>
+
               {grades.length ? (
                 <ul className="admin-grade-list">
                   {grades.map((grade, index) => (
@@ -545,11 +679,15 @@ export default function AdminDashboard() {
                         <span>{grade.grade}</span>
                         <strong>{grade.percent}%</strong>
                       </div>
+
                       <div className="admin-progress">
                         <div
                           className="admin-progress__bar"
                           style={{
-                            width: `${Math.max(0, Math.min(100, grade.percent))}%`,
+                            width: `${Math.max(
+                              0,
+                              Math.min(100, Number(grade.percent) || 0),
+                            )}%`,
                             background:
                               GRADE_COLORS[index % GRADE_COLORS.length],
                           }}
@@ -571,22 +709,39 @@ export default function AdminDashboard() {
                   <h2>Upcoming events</h2>
                   <p>What is coming up at school</p>
                 </div>
+
                 <a href="/admin/calendar" className="admin-text-link">
                   Calendar <span>→</span>
                 </a>
               </div>
+
               {events.length ? (
                 <ul className="admin-feed">
                   {events.map((event) => (
                     <li key={event.id}>
                       <span
-                        className={`admin-feed__icon admin-feed__icon--${event.type || "meeting"}`}
+                        className={`admin-feed__icon admin-feed__icon--${
+                          typeof event.type === "string"
+                            ? event.type
+                            : "meeting"
+                        }`}
                       >
                         {EVENT_ICONS[event.type] || <FaCalendarAlt />}
                       </span>
+
                       <div className="admin-feed__content">
-                        <strong>{event.title || "School event"}</strong>
-                        <small>{event.details || formatDate(event.date)}</small>
+                        <strong>
+                          {typeof event.title === "string"
+                            ? event.title
+                            : "School event"}
+                        </strong>
+
+                        <small>
+                          {typeof event.details === "string"
+                            ? event.details
+                            : formatDate(event.date)}
+                        </small>
+
                         {event.date && (
                           <span className="admin-feed__date">
                             {formatDate(event.date)}
@@ -607,25 +762,35 @@ export default function AdminDashboard() {
                   <h2>Recent announcements</h2>
                   <p>Latest messages shared with the school</p>
                 </div>
+
                 <a href="/admin/announcements" className="admin-text-link">
                   View all <span>→</span>
                 </a>
               </div>
+
               {announcements.length ? (
                 <ul className="admin-feed">
                   {announcements.map((announcement) => (
                     <li key={announcement.id}>
                       <span
-                        className={`admin-feed__icon admin-feed__icon--${announcement.type || "exam"}`}
+                        className={`admin-feed__icon admin-feed__icon--${
+                          typeof announcement.type === "string"
+                            ? announcement.type
+                            : "exam"
+                        }`}
                       >
                         {ANNOUNCEMENT_ICONS[announcement.type] || (
                           <FaBullhorn />
                         )}
                       </span>
+
                       <div className="admin-feed__content">
                         <strong>
-                          {announcement.title || "School announcement"}
+                          {typeof announcement.title === "string"
+                            ? announcement.title
+                            : "School announcement"}
                         </strong>
+
                         <small>{timeAgo(announcement.createdAt)}</small>
                       </div>
                     </li>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   FaUsers,
@@ -24,10 +25,14 @@ import {
 import { getRecentAnnouncements } from "../../services/adminService";
 
 import "../teacher/teacherdashboard.css";
-import { useNavigate } from "react-router-dom";
 
 const SUBJECT_COLORS = ["#2563eb", "#7c3aed", "#0d9488", "#ea580c", "#db2777"];
 const CLASS_COLORS = ["blue", "purple", "green"];
+
+const ROUTES = {
+  classes: "/teacher/classes",
+  students: "/teacher/students",
+};
 
 const quickActions = [
   {
@@ -47,16 +52,16 @@ const quickActions = [
     description: "Record student scores and grades",
     icon: <FaChartPie />,
     color: "green",
+    path: ROUTES.classes,
   },
   {
     title: "View Students",
     description: "Check your class lists",
     icon: <FaUsers />,
     color: "orange",
+    path: ROUTES.students,
   },
 ];
-
-/* ---------- Helpers ---------- */
 
 function getInitials(name = "") {
   return (
@@ -110,8 +115,6 @@ function EmptyState({ children }) {
   return <div className="teacher-empty">{children}</div>;
 }
 
-/* ---------- Pieces ---------- */
-
 function SectionHeading({ title, subtitle, action, onAction }) {
   return (
     <div className="teacher-section-heading">
@@ -153,7 +156,7 @@ function AwaitingScores({ items, onViewAll }) {
       <SectionHeading
         title="Awaiting Scores"
         subtitle="Students with no score yet in your subjects"
-        action="View all"
+        action="Enter scores"
         onAction={onViewAll}
       />
 
@@ -237,14 +240,13 @@ function ClassPerformance({ performance, overallAverage }) {
 }
 
 function MyClasses({ classes, subjects, onViewAll }) {
-  const navigate = useNavigate();
   return (
     <section className="teacher-card teacher-schedule-card">
       <SectionHeading
         title="My Classes"
         subtitle="Classes assigned to you"
         action="View students"
-        onAction={() => navigate("/teacher/classes")}
+        onAction={onViewAll}
       />
 
       {classes.length === 0 ? (
@@ -298,7 +300,7 @@ function QuickActions({ onAction }) {
             type="button"
             className="teacher-quick-action"
             key={action.title}
-            onClick={() => onAction(action.title)}
+            onClick={() => onAction(action)}
           >
             <div className={`teacher-quick-action-icon ${action.color}`}>
               {action.icon}
@@ -359,10 +361,9 @@ function Announcements({ announcements, onViewAll }) {
   );
 }
 
-/* ---------- Page ---------- */
-
 export default function TeacherDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [teacher, setTeacher] = useState(null);
   const [data, setData] = useState(null);
@@ -375,7 +376,8 @@ export default function TeacherDashboard() {
     let active = true;
 
     async function loadDashboard() {
-      if (!user?.uid) {
+      const uid = user?.uid || user?.id;
+      if (!uid) {
         setLoading(false);
         return;
       }
@@ -384,7 +386,7 @@ export default function TeacherDashboard() {
       setError("");
 
       try {
-        const profile = await getTeacherProfile(user.uid);
+        const profile = await getTeacherProfile(uid);
 
         if (!active) return;
         setTeacher(profile);
@@ -415,9 +417,16 @@ export default function TeacherDashboard() {
     return () => {
       active = false;
     };
-  }, [user?.uid]);
+  }, [user]);
 
-  const firstName = teacher?.fullName?.trim()?.split(" ")[0] || "Teacher";
+  const firstName = (
+    teacher?.fullName ||
+    user?.fullName ||
+    user?.displayName ||
+    "Teacher"
+  )
+    .trim()
+    .split(" ")[0];
   const greetingName = [teacher?.title, firstName].filter(Boolean).join(" ");
 
   const subjects = toList(teacher?.subjectsTaught);
@@ -479,8 +488,13 @@ export default function TeacherDashboard() {
   });
 
   function handleAction(action) {
+    if (action.path) {
+      navigate(action.path);
+      return;
+    }
+
     setNotice(
-      `${action} will be connected to its page when that feature is implemented.`,
+      `${action.title} will be connected to its page when that feature is implemented.`,
     );
   }
 
@@ -563,7 +577,7 @@ export default function TeacherDashboard() {
         <div className="teacher-dashboard-grid">
           <AwaitingScores
             items={data?.pending || []}
-            onViewAll={() => handleAction("All students awaiting scores")}
+            onViewAll={() => navigate(ROUTES.classes)}
           />
 
           <ClassPerformance
@@ -574,14 +588,18 @@ export default function TeacherDashboard() {
           <MyClasses
             classes={classes}
             subjects={subjects}
-            onViewAll={() => handleAction("Class lists")}
+            onViewAll={() => navigate(ROUTES.students)}
           />
 
           <QuickActions onAction={handleAction} />
 
           <Announcements
             announcements={announcements}
-            onViewAll={() => handleAction("All announcements")}
+            onViewAll={() =>
+              setNotice(
+                "All announcements will be connected when that page is built.",
+              )
+            }
           />
         </div>
 

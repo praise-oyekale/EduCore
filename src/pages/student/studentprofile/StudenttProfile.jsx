@@ -1,27 +1,56 @@
-import { FaEdit, FaKey, FaPumpMedical, FaUser } from "react-icons/fa";
-import "../studentprofile/studentprofile.css";
 import { useEffect, useState } from "react";
+import { FaEdit, FaKey, FaPumpMedical, FaUser } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
-import { getStudentProfile } from "../../../services/studentService";
-// import Input from "../../../components/common/Input";
-import EditProfileModel from "./EditProfileModal";
+import {
+  getStudentProfile,
+  updateStudentProfile,
+} from "../../../services/studentService";
+import EditProfileModal from "./EditProfileModal";
 import { academicSummary } from "../../../data/academicSummary";
+import AvatarUpload from "../../../components/common/AvatarUpload";
+import "../studentprofile/studentprofile.css";
+
 export default function StudentProfile() {
   const [student, setStudent] = useState(null);
-  const { user, profile } = useAuth();
+  const { user, profile, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const courseLength = profile?.subjects?.length
+  const [notice, setNotice] = useState("");
+
+  const courseLength =
+    profile?.subjects?.length || student?.subjects?.length || 0;
+  const activeUid = user?.uid || user?.id;
+
   useEffect(() => {
     async function loadStudent() {
-      if (!user) return;
-
-      const data = await getStudentProfile(user.uid);
-
-      setStudent(data);
+      if (!activeUid) return;
+      try {
+        const data = await getStudentProfile(activeUid);
+        setStudent(data);
+      } catch (err) {
+        console.error("Error loading student profile:", err);
+      }
     }
 
     loadStudent();
-  }, [user]);
+  }, [activeUid]);
+
+  async function handlePhotoUploaded(photoURL) {
+    // 1. Update local student state
+    setStudent((prev) => ({ ...prev, photoURL }));
+
+    // 2. Persist to Firestore
+    if (activeUid) {
+      await updateStudentProfile(activeUid, { photoURL }).catch(console.error);
+    }
+
+    // 3. Update Auth Context so Navbar syncs instantly
+    if (typeof updateUser === "function") {
+      updateUser({ photoURL });
+    }
+
+    setNotice("Profile picture updated successfully!");
+  }
+
   return (
     <div className="student-profilecontainer">
       <section className="profilegreeting-section">
@@ -30,26 +59,45 @@ export default function StudentProfile() {
           <p>Manage your personal, academic, and contact information.</p>
         </div>
         <div className="profileaction-button">
-          <button className="profile-changepass-btn">
-            <FaKey />
-            Change password{" "}
+          <button
+            className="profile-changepass-btn"
+            onClick={() =>
+              alert("Password changes are managed via Firebase Auth.")
+            }
+          >
+            <FaKey /> Change password
           </button>
-          <button className="profile-edit-btn">
-            <FaEdit /> Edit profile{" "}
+          <button
+            className="profile-edit-btn"
+            onClick={() => setIsEditing(true)}
+          >
+            <FaEdit /> Edit profile
           </button>
         </div>
       </section>
+
+      {notice && (
+        <div className="profile-notice-banner">
+          <span>{notice}</span>
+          <button onClick={() => setNotice("")}>×</button>
+        </div>
+      )}
+
       <section className="profile-main-section">
         <div className="student-profile-section">
           <div className="stu-profile-details">
-            <div className="stu-profile-picture">
-              <h1>AR</h1>
-            </div>
+            <AvatarUpload
+              collectionName="student"
+              uid={activeUid}
+              name={student?.fullName || user?.displayName}
+              photoURL={student?.photoURL || user?.photoURL}
+              onUploaded={handlePhotoUploaded}
+            />
             <h5 style={{ fontSize: "20px", fontWeight: "700" }}>
-              {student?.fullName}
+              {student?.fullName || user?.displayName}
             </h5>
             <p style={{ color: "#9db1c2", fontSize: "13px" }}>
-              Student ID: {profile?.studentId}
+              Student ID: {profile?.studentId || student?.studentId || "N/A"}
             </p>
             <div
               style={{
@@ -68,8 +116,9 @@ export default function StudentProfile() {
                   borderRadius: "7px",
                 }}
               >
-                {profile?.grade} · {profile?.department}
-              </h5>{" "}
+                {profile?.grade || student?.grade || "Grade"} ·{" "}
+                {profile?.department || student?.department || "General"}
+              </h5>
               <h5
                 style={{
                   color: "#15803D",
@@ -78,7 +127,7 @@ export default function StudentProfile() {
                   borderRadius: "7px",
                 }}
               >
-                {profile?.status}
+                {profile?.status || student?.status || "Active"}
               </h5>
             </div>
             <div
@@ -89,7 +138,7 @@ export default function StudentProfile() {
                 width: "100%",
                 marginTop: "10px",
               }}
-            ></div>
+            />
             <div
               style={{
                 display: "flex",
@@ -106,7 +155,9 @@ export default function StudentProfile() {
                   justifyContent: "center",
                 }}
               >
-                <h2 style={{ fontWeight: "700" }}>{profile?.gpa}</h2>
+                <h2 style={{ fontWeight: "700" }}>
+                  {profile?.gpa || student?.gpa || "0.0"}
+                </h2>
                 <h5 style={{ color: "#9db1c2" }}>GPA</h5>
               </div>
               <div
@@ -117,7 +168,7 @@ export default function StudentProfile() {
                   justifyContent: "center",
                 }}
               >
-                <h2>96%</h2>
+                <h2>{student?.attendanceRate || "96"}%</h2>
                 <h5 style={{ color: "#9db1c2" }}>Attendance</h5>
               </div>
               <div
@@ -152,13 +203,18 @@ export default function StudentProfile() {
                     borderRadius: "7px",
                   }}
                 >
-                  {" "}
                   <FaUser />
                 </span>
                 <div>
-                  <h5>{profile?.guardianName}</h5>
+                  <h5>
+                    {profile?.guardianName ||
+                      student?.guardianName ||
+                      "Not provided"}
+                  </h5>
                   <p style={{ color: "#9db1c2", fontSize: "13px" }}>
-                    {profile?.guardianPhone}
+                    {profile?.guardianPhone ||
+                      student?.guardianPhone ||
+                      "Not provided"}
                   </p>
                 </div>
               </div>
@@ -170,8 +226,7 @@ export default function StudentProfile() {
                   width: "100%",
                   marginTop: "10px",
                 }}
-              ></div>
-
+              />
               <div
                 style={{
                   display: "flex",
@@ -192,19 +247,19 @@ export default function StudentProfile() {
                     borderRadius: "7px",
                   }}
                 >
-                  {" "}
                   <FaPumpMedical />
                 </span>
                 <div>
                   <h5>Known allergies</h5>
                   <p style={{ color: "#9db1c2", fontSize: "13px" }}>
-                    Penicillin
+                    {student?.allergies || "None reported"}
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <div className="student-profile-info-section">
           <div className="student-personal-info">
             <div
@@ -243,29 +298,25 @@ export default function StudentProfile() {
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                     fontSize: "15px",
                   }}
                 >
-                  {student?.fullName}
+                  {student?.fullName || user?.displayName}
                 </div>
               </div>
 
               <div style={{ width: "100%" }}>
                 <h4>Date of birth</h4>
                 <div
-                  type="text"
-                  placeholder={``}
                   style={{
                     width: "100%",
                     padding: "10px",
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                   }}
                 >
-                  {student?.dateOfBirth || "Not provided!"}
+                  {student?.dateOfBirth || "Not provided"}
                 </div>
               </div>
             </div>
@@ -289,29 +340,25 @@ export default function StudentProfile() {
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                     fontSize: "15px",
                   }}
                 >
-                  {student?.email}
+                  {student?.email || user?.email}
                 </div>
               </div>
 
               <div style={{ width: "100%" }}>
                 <h4>Phone Number</h4>
                 <div
-                  type="text"
-                  placeholder={``}
                   style={{
                     width: "100%",
                     padding: "10px",
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                   }}
                 >
-                  {student?.phoneNumber || "Not provided!"}
+                  {student?.phoneNumber || "Not provided"}
                 </div>
               </div>
             </div>
@@ -335,29 +382,25 @@ export default function StudentProfile() {
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                     fontSize: "15px",
                   }}
                 >
-                  {student?.department || "PENDING!"}
+                  {student?.department || "General"}
                 </div>
               </div>
 
               <div style={{ width: "100%" }}>
                 <h4>Gender</h4>
                 <div
-                  type="text"
-                  placeholder={``}
                   style={{
                     width: "100%",
                     padding: "10px",
                     borderRadius: "10px",
                     border: "1px solid #E7E9EE",
                     marginTop: "5px",
-                    outline: "none",
                   }}
                 >
-                  {student?.gender || "Not provided!"}
+                  {student?.gender || "Not provided"}
                 </div>
               </div>
             </div>
@@ -365,23 +408,20 @@ export default function StudentProfile() {
             <div style={{ width: "100%", marginTop: "10px" }}>
               <h4>Home Address</h4>
               <div
-                type="text"
-                placeholder={``}
                 style={{
                   width: "100%",
                   padding: "10px",
                   borderRadius: "10px",
                   border: "1px solid #E7E9EE",
                   marginTop: "5px",
-                  outline: "none",
                 }}
               >
-                {student?.homeAddress || "Not provided!"}
+                {student?.homeAddress || "Not provided"}
               </div>
             </div>
 
             {isEditing && (
-              <EditProfileModel
+              <EditProfileModal
                 student={student}
                 onClose={() => setIsEditing(false)}
               />
@@ -391,7 +431,6 @@ export default function StudentProfile() {
           <div className="student-academicsummary">
             <div>
               <h2 style={{ fontSize: "17px" }}>Academic Summary</h2>
-
               <div
                 style={{
                   display: "grid",
@@ -405,7 +444,7 @@ export default function StudentProfile() {
                 <span style={{ color: "#B3A2B3" }}>Detail</span>
               </div>
 
-              {academicSummary.map((item) => (
+              {(academicSummary || []).map((item) => (
                 <div
                   key={item.label}
                   style={{

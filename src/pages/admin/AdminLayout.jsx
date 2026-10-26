@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
-import AdminDashboardNavbar from "../../components/layout/admin/AdminDashboardNav";
+// import AdminDashboardNavbar from "../../components/layout/admin/AdminDashboardNav";
 import { Sidebar } from "../../components/layout/Sidebar";
 import { AdminSidebar } from "../../data/sidebarData";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import DashboardNavbar from "../../components/common/DashboardNavbar";
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,7 +17,7 @@ export default function AdminLayout() {
         setSidebarOpen={setSidebarOpen}
       />
       <div className="main-content">
-        <AdminDashboardNavbar
+        <DashboardNavbar
           profile={profile}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}

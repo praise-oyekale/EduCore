@@ -1,100 +1,162 @@
 @layer base {
-  * { margin: 0; padding: 0; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
+/* =====================================
+   MAIN DASHBOARD
+===================================== */
+
 .studashboardcontents-container {
-  /* margin-left: 250px; */
-  background-color: #f5f6f8;
+  width: 100%;
   min-height: 100vh;
+  background-color: #f5f6f8;
+  color: #111827;
 }
+
+/* =====================================
+   WELCOME SECTION
+===================================== */
+
 .greeting-section {
   padding: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
+
+.dashboard-welcome-message {
+  min-width: 0;
+}
+
 .dashboard-welcome-message h1 {
-  color: black;
+  color: #111827;
   font-size: 23px;
+  font-weight: 600;
+  line-height: 1.4;
 }
+
 .dashboard-welcome-message p {
   color: #7774a7;
   font-size: 14px;
+  line-height: 1.6;
   margin-top: 8px;
 }
+
 .action-button {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
 }
+
 .dashoboard-welcome-download {
   display: flex;
   align-items: center;
-  gap: 5px;
-
-
+  justify-content: center;
+  gap: 7px;
   background-color: #ffffff;
-  color: black;
-  border: none;
-  padding: 10px;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  min-height: 44px;
   width: 170px;
   border-radius: 10px;
-  box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .dashoboard-welcome-payfees {
-  padding: 10px;
+  padding: 12px;
+  min-height: 44px;
   border: none;
   background-color: #2563eb;
   border-radius: 10px;
-  color: white;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 7px;
   font-weight: 600;
-  width: 100px;
+  width: 110px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.statcard-section { 
-  padding: 30px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: -40px;
+.dashoboard-welcome-download:hover {
+  background-color: #f9fafb;
 }
+
+.dashoboard-welcome-payfees:hover {
+  background-color: #1d4ed8;
+}
+
+/* =====================================
+   DASHBOARD STAT CARDS
+===================================== */
+
+.statcard-section {
+  padding: 0 30px 30px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* =====================================
+   PERFORMANCE / COURSE / ATTENDANCE
+===================================== */
 
 .performancestat-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  /* grid-template-columns: 58% 38%; */
-  gap:  10px;
-  padding: 20px;
-  margin-top: -20px;
+  grid-template-columns: minmax(0, 1.03fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 0 20px 25px;
+  margin-top: 0;
+  min-width: 0;
 }
-.studentchart-container{
-  /* margin-left: 30px; */
+
+/* Left column: performance chart and courses */
+
+.studentchart-container {
+  min-width: 0;
+  width: 100%;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   padding: 20px;
-  /* width: 100%; */
-  box-sizing: border-box;
 }
 
-/* .course-progress-container{
+/* Course progress heading */
 
-} */
-.course-progress-titles{
-display: flex;
-align-items: center;
-justify-content: space-between;
-color: black;
+.course-progress-titles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #111827;
+  margin-bottom: 18px;
 }
 
-.course-progress-titles h5{
-    color: #2563eb;
+.course-progress-titles h4 {
+  font-size: 16px;
+  font-weight: 650;
+  text-transform: capitalize;
 }
+
+.course-progress-titles h5 {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Empty course state */
 
 .course-empty {
   display: flex;
@@ -109,108 +171,518 @@ color: black;
   color: #7774a7;
   font-size: 14px;
   font-weight: 500;
-  line-height: 1.5;
-}
-.course-math-container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-}
-.course-math-text-contents{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: black;
-}
-.course-math-text-contents span{
-        background-color: #EEF3FF;
-    padding: 12px;
-
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    border-radius: 10px;
-    width: 40px;
-
-    color: blue;
-
-}
-.course-math-text h5{
-    font-size: 16px;
-}
-.course-math-text p{
-    font-size: 14px;
-    color: #7774A7;
-}
-.course-math-progress-container{
-
-    width: 25%;
-}
-.progress{
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 999px;
-    border: 1px solid;
-
+  line-height: 1.6;
 }
 
-.progress-fill{
-    background: #2563eb;
-    height: 100%;
-    border-radius: inherit;
+/* Individual course */
+
+.course-math-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  min-width: 0;
 }
 
-.course-english-container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
+.course-math-text-contents {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #111827;
+  min-width: 0;
 }
 
+.course-math-text-contents > span {
+  background-color: #eef3ff;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  color: #2563eb;
+}
 
-.attendance-section{
-  /* border: 1px solid black; */
+.course-math-text {
+  min-width: 0;
+}
+
+.course-math-text h5 {
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.course-math-text p {
+  font-size: 13px;
+  color: #7774a7;
+  margin-top: 5px;
+}
+
+.course-math-progress-container {
+  width: 25%;
+  min-width: 75px;
+  flex-shrink: 0;
+}
+
+.progress {
+  position: relative;
+  height: 9px;
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 999px;
+  border: none;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: #2563eb;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+/* Legacy English course container */
+
+.course-english-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* =====================================
+   RIGHT COLUMN
+   ATTENDANCE + ANNOUNCEMENTS
+===================================== */
+
+.attendance-section {
+  min-width: 0;
+  width: 100%;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 16px;  
+  border-radius: 16px;
   padding: 20px;
   box-sizing: border-box;
-  /* width: 100%; */
-  height: 30vh;
+  min-height: 230px;
+  height: auto;
 }
 
-@media (max-width: 768px) {
-  .studashboardcontents-container{
-    margin-left: 0px;
-    /* padding: 10px; */
+/* =====================================
+   STUDENT ANNOUNCEMENTS CARD
+===================================== */
+
+.student-announcements-card {
+  width: 100%;
+  min-width: 0;
+  margin-top: 18px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
+  box-sizing: border-box;
+}
+
+/* Announcement heading */
+
+.student-announcements-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.student-announcements-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.student-announcements-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: #eff4ff;
+  color: #2563eb;
+  font-size: 17px;
+}
+
+.student-announcements-title h3 {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.student-announcements-title p {
+  margin: 0;
+  color: #7b8497;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.student-announcements-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Loading, empty and error messages */
+
+.student-announcements-state {
+  margin: 0;
+  padding: 22px 12px;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.student-announcements-error {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+/* Announcement list */
+
+.student-announcements-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.student-announcement-item {
+  min-width: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.student-announcement-item:first-child {
+  padding-top: 0;
+}
+
+.student-announcement-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Category, pinned label and time */
+
+.student-announcement-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 9px;
+}
+
+.student-announcement-category,
+.student-announcement-pinned {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.student-announcement-pinned {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.student-announcement-time {
+  margin-left: auto;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* Announcement content */
+
+.student-announcement-item h4 {
+  margin: 0 0 7px;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.student-announcement-message {
+  margin: 0 0 9px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.student-announcement-author {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =====================================
+   TABLET RESPONSIVENESS
+===================================== */
+
+@media (max-width: 1100px) {
+  .statcard-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .greeting-section{
+
+  .performancestat-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .studentchart-container {
+    width: 100%;
+  }
+
+  .attendance-section {
+    min-height: 220px;
+  }
+}
+
+/* =====================================
+   MOBILE RESPONSIVENESS
+===================================== */
+
+@media (max-width: 768px) {
+  .studashboardcontents-container {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .greeting-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 16px;
     width: 100%;
-    padding: 10px;
+    padding: 20px 15px;
   }
-  .action-button{
+
+  .dashboard-welcome-message h1 {
+    font-size: 21px;
+  }
+
+  .dashboard-welcome-message p {
+    font-size: 13px;
+  }
+
+  .action-button {
     display: flex;
     width: 100%;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 0;
+  }
 
-  }
-  .dashoboard-welcome-payfees{
+  .dashoboard-welcome-download,
+  .dashoboard-welcome-payfees {
     width: 100%;
+    flex: 1;
+    padding: 11px 8px;
+    font-size: 12px;
   }
-  .dashoboard-welcome-download{
+
+  .statcard-section {
+    padding: 0 15px 20px;
+    margin-top: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .performancestat-section {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 15px 20px;
+    gap: 15px;
+    margin-top: 0;
+  }
+
+  .studentchart-container {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .attendance-section {
+    padding: 16px;
+    min-height: 200px;
+    border-radius: 14px;
+  }
+
+  .student-announcements-card {
+    margin-top: 15px;
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .student-announcements-title h3 {
+    font-size: 16px;
+  }
+
+  .course-math-container {
+    gap: 10px;
+  }
+
+  .course-math-progress-container {
+    width: 25%;
+    min-width: 60px;
+  }
+}
+
+/* =====================================
+   SMALL MOBILE SCREENS
+===================================== */
+
+@media (max-width: 480px) {
+  .greeting-section {
+    padding: 18px 12px;
+  }
+
+  .dashboard-welcome-message h1 {
+    font-size: 19px;
+  }
+
+  .action-button {
+    gap: 8px;
+  }
+
+  .dashoboard-welcome-download,
+  .dashoboard-welcome-payfees {
+    font-size: 11px;
+  }
+
+  .statcard-section {
+    padding: 0 12px 18px;
+    gap: 10px;
+  }
+
+  .performancestat-section {
+    padding: 0 12px 18px;
+    gap: 12px;
+  }
+
+  .studentchart-container,
+  .attendance-section {
+    padding: 14px;
+  }
+
+  .course-progress-titles {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .course-progress-titles h4 {
+    font-size: 15px;
+  }
+
+  .course-progress-titles h5 {
+    font-size: 12px;
+  }
+
+  .course-math-container {
+    align-items: flex-start;
+  }
+
+  .course-math-text-contents {
+    gap: 8px;
+  }
+
+  .course-math-text-contents > span {
+    width: 36px;
+    height: 36px;
+    padding: 9px;
+  }
+
+  .course-math-text h5 {
+    font-size: 13px;
+  }
+
+  .course-math-text p {
+    font-size: 12px;
+  }
+
+  .course-math-progress-container {
+    min-width: 55px;
+    width: 24%;
+  }
+
+  .student-announcements-card {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .student-announcements-heading {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .student-announcements-title {
+    gap: 9px;
+  }
+
+  .student-announcements-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .student-announcements-title h3 {
+    font-size: 15px;
+  }
+
+  .student-announcements-title p {
+    font-size: 11px;
+  }
+
+  .student-announcement-item {
+    padding: 14px 0;
+  }
+
+  .student-announcement-item h4 {
+    font-size: 13px;
+  }
+
+  .student-announcement-message {
+    font-size: 12px;
+  }
+
+  .student-announcement-time {
     width: 100%;
-  }
-  .statcard-section{
-    padding: 10px;
-    margin-top: 8px;
-  }
-  .sidebar-active{
-    display: block;
+    margin-left: 0;
   }
 }

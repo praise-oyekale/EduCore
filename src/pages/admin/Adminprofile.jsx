@@ -5,7 +5,10 @@ import {
   createAdminProfile,
   getAdminProfile,
   updateAdminProfile,
+  getSchoolPeopleStats,
 } from "../../services/adminService";
+
+import AvatarUpload from "../../components/common/AvatarUpload";
 
 import {
   FaKey,
@@ -17,6 +20,10 @@ import {
 } from "react-icons/fa";
 
 import "./adminprofile.css";
+
+/* =========================================================
+   DEFAULT ADMIN PROFILE
+========================================================= */
 
 const emptyAdmin = {
   fullName: "",
@@ -35,33 +42,79 @@ const emptyAdmin = {
   directReports: "",
   roleName: "",
   twoFactorEnabled: false,
+  photoURL: "",
 };
 
-function getInitials(name = "") {
-  return (
-    name
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase() || "A"
-  );
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function normalizeDate(value) {
+  if (!value) return "";
+
+  let date;
+
+  if (typeof value?.toDate === "function") {
+    date = value.toDate();
+  } else if (typeof value?.seconds === "number") {
+    date = new Date(value.seconds * 1000);
+  } else if (value instanceof Date) {
+    date = value;
+  } else if (typeof value === "string") {
+    return value;
+  } else {
+    return "";
+  }
+
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
 }
 
-function formatDate(dateString) {
-  if (!dateString) return "Not provided";
+function displayValue(value, fallback = "Not provided") {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
 
-  const date = new Date(`${dateString}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return dateString;
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value);
+  }
 
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  if (typeof value === "boolean") {
+    return value ? "Enabled" : "Not enabled";
+  }
+
+  return fallback;
 }
+
+function formatDate(value) {
+  const normalized = normalizeDate(value);
+
+  if (!normalized) return "Not provided";
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    const [year, month, day] = normalized.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  const date = new Date(normalized);
+
+  return Number.isNaN(date.getTime())
+    ? "Not provided"
+    : date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+}
+
+/* =========================================================
+   PROFILE FIELD
+========================================================= */
 
 function ProfileField({
   label,
@@ -72,6 +125,13 @@ function ProfileField({
   type = "text",
   readOnly = false,
 }) {
+  const safeValue =
+    value === null || value === undefined
+      ? ""
+      : typeof value === "string" || typeof value === "number"
+        ? String(value)
+        : "";
+
   return (
     <div className="admin-profile-field">
       <label htmlFor={`admin-${name}`}>{label}</label>
@@ -81,51 +141,60 @@ function ProfileField({
           id={`admin-${name}`}
           name={name}
           type={type}
-          value={value ?? ""}
+          value={safeValue}
           onChange={onChange}
         />
       ) : (
-        <div className="admin-profile-field-value">
-          {value || "Not provided"}
-        </div>
+        <div className="admin-profile-field-value">{displayValue(value)}</div>
       )}
     </div>
   );
 }
 
-function AdminOverview({ admin }) {
+/* =========================================================
+   ADMIN OVERVIEW
+========================================================= */
+
+function AdminOverview({ admin, uid, onAvatarUploaded }) {
   return (
     <section className="admin-profile-card admin-overview-card">
       <div className="admin-profile-identity">
-        <div className="admin-profile-avatar">
-          {getInitials(admin.fullName)}
+        <div className="admin-profile-avatar-upload">
+          <AvatarUpload
+            collectionName="admin"
+            uid={uid}
+            name={admin.fullName || "Admin"}
+            photoURL={admin.photoURL || ""}
+            size={92}
+            onUploaded={onAvatarUploaded}
+          />
         </div>
 
-        <h2>{admin.fullName || "Administrator name not set"}</h2>
+        <h2>{admin.fullName || "Administrator"}</h2>
 
         <p className="admin-profile-staff-id">
-          Staff ID: {admin.staffId || "Not assigned"}
+          {displayValue(admin.staffId, "Administrator account")}
         </p>
 
         <div className="admin-profile-tags">
           <span className="admin-profile-title-tag">
-            {admin.title || "Title not set"}
+            {displayValue(admin.title, "Administrator")}
           </span>
 
           <span className="admin-profile-employment-tag">
-            {admin.employmentType || "Full-time"}
+            {displayValue(admin.employmentType, "Active")}
           </span>
         </div>
       </div>
 
       <div className="admin-profile-stats">
         <div className="admin-profile-stat">
-          <strong>{Number(admin.students || 0).toLocaleString()}</strong>
+          <strong>{(Number(admin.students) || 0).toLocaleString()}</strong>
           <span>Students</span>
         </div>
 
         <div className="admin-profile-stat">
-          <strong>{Number(admin.staff || 0).toLocaleString()}</strong>
+          <strong>{(Number(admin.staff) || 0).toLocaleString()}</strong>
           <span>Staff</span>
         </div>
 
@@ -138,11 +207,15 @@ function AdminOverview({ admin }) {
   );
 }
 
+/* =========================================================
+   ACCESS PERMISSIONS
+========================================================= */
+
 function AccessPermissions({ admin }) {
   const items = [
     {
       id: 1,
-      title: `${admin.roleName || "Super Admin"} role`,
+      title: `${displayValue(admin.roleName, "Super Admin")} role`,
       description: "Full system access",
       icon: <FaShieldAlt />,
       color: "blue",
@@ -177,6 +250,10 @@ function AccessPermissions({ admin }) {
     </section>
   );
 }
+
+/* =========================================================
+   PERSONAL INFORMATION
+========================================================= */
 
 function PersonalInformation({
   admin,
@@ -272,12 +349,28 @@ function PersonalInformation({
   );
 }
 
+/* =========================================================
+   EMPLOYMENT SUMMARY
+========================================================= */
+
 function EmploymentSummary({ admin }) {
   const details = [
-    { label: "Date joined", value: formatDate(admin.dateJoined) },
-    { label: "Department", value: admin.department },
-    { label: "Reports to", value: admin.reportingTo },
-    { label: "Direct reports", value: admin.directReports },
+    {
+      label: "Date joined",
+      value: formatDate(admin.dateJoined),
+    },
+    {
+      label: "Department",
+      value: displayValue(admin.department),
+    },
+    {
+      label: "Reports to",
+      value: displayValue(admin.reportingTo),
+    },
+    {
+      label: "Direct reports",
+      value: displayValue(admin.directReports),
+    },
   ];
 
   return (
@@ -295,9 +388,8 @@ function EmploymentSummary({ admin }) {
         {details.map((item) => (
           <div className="admin-employment-row" key={item.label}>
             <span className="admin-employment-label">{item.label}</span>
-            <span className="admin-employment-value">
-              {item.value || "Not provided"}
-            </span>
+
+            <span className="admin-employment-value">{item.value}</span>
           </div>
         ))}
       </div>
@@ -305,22 +397,34 @@ function EmploymentSummary({ admin }) {
   );
 }
 
+/* =========================================================
+   MAIN ADMIN PROFILE
+========================================================= */
+
 export default function AdminProfile() {
   const { user } = useAuth();
 
   const [admin, setAdmin] = useState(emptyAdmin);
   const [originalAdmin, setOriginalAdmin] = useState(emptyAdmin);
+
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+
+  /* ---------------------------------------------------------
+     LOAD ADMIN PROFILE AND SCHOOL-WIDE COUNTS
+  --------------------------------------------------------- */
 
   useEffect(() => {
     let active = true;
 
     async function loadAdminProfile() {
       if (!user?.uid) {
+        setAdmin(emptyAdmin);
+        setOriginalAdmin(emptyAdmin);
         setLoading(false);
         setError("Please sign in to view your administrator profile.");
         return;
@@ -330,40 +434,59 @@ export default function AdminProfile() {
       setError("");
 
       try {
+        // Load the signed-in administrator's own profile.
         let profile = await getAdminProfile(user.uid);
 
-        // Create an admin document if one does not exist yet.
         if (!profile) {
           await createAdminProfile(user);
           profile = await getAdminProfile(user.uid);
         }
 
-        if (!active) return;
-
         if (!profile) {
           throw new Error("Your administrator profile could not be loaded.");
         }
 
+        // Load actual school-wide counts from Firestore.
+        const peopleStats = await getSchoolPeopleStats();
+
+        if (!active) return;
+
         const loadedAdmin = {
           ...emptyAdmin,
           ...profile,
+
           email: profile.email || user.email || "",
           fullName: profile.fullName || user.displayName || "",
           title: profile.title || "",
           phoneNumber: profile.phoneNumber || "",
           office: profile.office || "",
+
+          dateJoined: normalizeDate(profile.dateJoined),
+
+          photoURL: profile.photoURL || user.photoURL || "",
+
+          twoFactorEnabled: Boolean(profile.twoFactorEnabled),
+
+          // These values come from the actual collections,
+          // not the admin profile document.
+          students: peopleStats.totalStudents,
+          staff: peopleStats.totalStaff,
         };
 
         setAdmin(loadedAdmin);
         setOriginalAdmin(loadedAdmin);
       } catch (err) {
-        console.error("Error loading admin profile:", err);
+        console.error("Error loading admin profile or school counts:", err);
 
         if (active) {
-          setError(err.message || "Unable to load your administrator profile.");
+          setError(
+            err.message || "Unable to load your profile and school statistics.",
+          );
         }
       } finally {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       }
     }
 
@@ -372,7 +495,30 @@ export default function AdminProfile() {
     return () => {
       active = false;
     };
-  }, [user?.uid]);
+  }, [user?.uid, user?.email, user?.displayName, user?.photoURL]);
+
+  /* ---------------------------------------------------------
+     AVATAR UPLOAD CALLBACK
+  --------------------------------------------------------- */
+
+  function handleAvatarUploaded(photoURL) {
+    setAdmin((previous) => ({
+      ...previous,
+      photoURL,
+    }));
+
+    setOriginalAdmin((previous) => ({
+      ...previous,
+      photoURL,
+    }));
+
+    setNotice("Your profile picture has been updated successfully.");
+    setError("");
+  }
+
+  /* ---------------------------------------------------------
+     EDIT PROFILE
+  --------------------------------------------------------- */
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -400,6 +546,10 @@ export default function AdminProfile() {
     setError("");
   }
 
+  /* ---------------------------------------------------------
+     SAVE PROFILE
+  --------------------------------------------------------- */
+
   async function handleSave() {
     if (!user?.uid) {
       setError("You must be signed in to update your profile.");
@@ -416,7 +566,6 @@ export default function AdminProfile() {
     setNotice("");
 
     try {
-      // Save only the fields the administrator can edit.
       const adminData = {
         fullName: admin.fullName.trim(),
         title: admin.title.trim(),
@@ -426,7 +575,10 @@ export default function AdminProfile() {
 
       await updateAdminProfile(user.uid, adminData);
 
-      const updatedAdmin = { ...admin, ...adminData };
+      const updatedAdmin = {
+        ...admin,
+        ...adminData,
+      };
 
       setAdmin(updatedAdmin);
       setOriginalAdmin(updatedAdmin);
@@ -443,6 +595,21 @@ export default function AdminProfile() {
       setSaving(false);
     }
   }
+
+  /* ---------------------------------------------------------
+     CHANGE PASSWORD NOTICE
+  --------------------------------------------------------- */
+
+  function handlePasswordClick() {
+    setNotice(
+      "Password changing is not connected yet. Use Firebase Authentication to implement a secure password update.",
+    );
+    setError("");
+  }
+
+  /* ---------------------------------------------------------
+     LOADING AND ERROR STATES
+  --------------------------------------------------------- */
 
   if (loading) {
     return (
@@ -465,6 +632,10 @@ export default function AdminProfile() {
     );
   }
 
+  /* ---------------------------------------------------------
+     RENDER PROFILE
+  --------------------------------------------------------- */
+
   return (
     <main className="admin-profile-page">
       <div className="admin-profile-container">
@@ -478,11 +649,7 @@ export default function AdminProfile() {
             <button
               type="button"
               className="admin-profile-secondary-button"
-              onClick={() =>
-                setNotice(
-                  "Password changing should be connected to Firebase Authentication.",
-                )
-              }
+              onClick={handlePasswordClick}
             >
               <FaKey />
               Change password
@@ -501,9 +668,17 @@ export default function AdminProfile() {
         </header>
 
         {error && (
-          <div className="admin-profile-notice admin-profile-error-notice">
+          <div
+            className="admin-profile-notice admin-profile-error-notice"
+            role="alert"
+          >
             <span>{error}</span>
-            <button type="button" onClick={() => setError("")}>
+
+            <button
+              type="button"
+              aria-label="Dismiss error"
+              onClick={() => setError("")}
+            >
               <FaTimes />
             </button>
           </div>
@@ -512,7 +687,12 @@ export default function AdminProfile() {
         {notice && (
           <div className="admin-profile-notice" role="status">
             <span>{notice}</span>
-            <button type="button" onClick={() => setNotice("")}>
+
+            <button
+              type="button"
+              aria-label="Dismiss notification"
+              onClick={() => setNotice("")}
+            >
               <FaTimes />
             </button>
           </div>
@@ -520,7 +700,12 @@ export default function AdminProfile() {
 
         <div className="admin-profile-layout">
           <div className="admin-profile-left-column">
-            <AdminOverview admin={admin} />
+            <AdminOverview
+              admin={admin}
+              uid={user.uid}
+              onAvatarUploaded={handleAvatarUploaded}
+            />
+
             <AccessPermissions admin={admin} />
           </div>
 

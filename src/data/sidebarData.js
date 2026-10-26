@@ -298,4 +298,16 @@ export const AdminSidebar = [
       },
     ],
   },
+  {
+    title: "COMMUNICATION",
+    items: [
+      {
+         icon:  FaBullhorn,
+        label: "Announcements",
+        path: "/admin/announcements",
+        isLocked: false,
+      }
+    ]
+    
+  }
 ];

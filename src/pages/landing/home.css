@@ -215,9 +215,7 @@
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
 
-/* =========================
-   TABLETS AND MOBILE
-========================= */
+  
 
 @media (max-width: 768px) {
   .hero {

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-
 import {
   createTeacherProfile,
   getAssignedStudents,
   getTeacherProfile,
   updateTeacherProfile,
 } from "../../services/teacherService";
-
+import AvatarUpload from "../../components/common/AvatarUpload";
 import {
   FaKey,
   FaPen,
@@ -16,12 +15,13 @@ import {
   FaTimes,
   FaSave,
 } from "react-icons/fa";
-
 import "../teacher/teacherprofile.css";
 
 const emptyTeacher = {
+  id: "",
   title: "",
   fullName: "",
+  photoURL: "",
   staffId: "",
   department: "",
   position: "",
@@ -40,26 +40,9 @@ const emptyTeacher = {
   assignedClasses: [],
 };
 
-/* ---------- Helpers ---------- */
-
-function getInitials(name = "") {
-  return (
-    name
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase() || "T"
-  );
-}
-
 function formatDate(dateString) {
   if (!dateString) return "Not provided";
-
   const date = new Date(`${dateString}T00:00:00`);
-
   if (Number.isNaN(date.getTime())) return dateString;
 
   return date.toLocaleDateString("en-US", {
@@ -71,7 +54,6 @@ function formatDate(dateString) {
 
 function yearsSince(dateString) {
   if (!dateString) return 0;
-
   const start = new Date(`${dateString}T00:00:00`);
   if (Number.isNaN(start.getTime())) return 0;
 
@@ -81,7 +63,6 @@ function yearsSince(dateString) {
   );
 }
 
-// Subjects may be a list (new) or a comma-separated string (old data)
 function toList(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
   if (typeof value === "string") {
@@ -92,8 +73,6 @@ function toList(value) {
   }
   return [];
 }
-
-/* ---------- Pieces ---------- */
 
 function ProfileField({
   label,
@@ -107,7 +86,6 @@ function ProfileField({
   return (
     <div className="teacher-profile-field">
       <label htmlFor={`teacher-${name}`}>{label}</label>
-
       {editing && !readOnly ? (
         <input
           id={`teacher-${name}`}
@@ -138,7 +116,6 @@ function PersonalInformation({
     <section className="teacher-profile-card teacher-personal-card">
       <div className="teacher-profile-card-heading">
         <h2>Personal information</h2>
-
         {editing ? (
           <div className="teacher-profile-edit-actions">
             <button
@@ -149,15 +126,13 @@ function PersonalInformation({
             >
               Cancel
             </button>
-
             <button
               type="button"
               className="teacher-profile-save-button"
               onClick={onSave}
               disabled={saving}
             >
-              <FaSave />
-              {saving ? "Saving..." : "Save"}
+              <FaSave /> {saving ? "Saving..." : "Save"}
             </button>
           </div>
         ) : (
@@ -179,7 +154,6 @@ function PersonalInformation({
           editing={editing}
           onChange={onChange}
         />
-
         <ProfileField
           label="Date of birth"
           name="dateOfBirth"
@@ -188,7 +162,6 @@ function PersonalInformation({
           editing={editing}
           onChange={onChange}
         />
-
         <ProfileField
           label="Email address"
           name="email"
@@ -197,7 +170,6 @@ function PersonalInformation({
           onChange={onChange}
           readOnly
         />
-
         <ProfileField
           label="Phone number"
           name="phoneNumber"
@@ -205,7 +177,6 @@ function PersonalInformation({
           editing={editing}
           onChange={onChange}
         />
-
         <div className="teacher-profile-office-field">
           <ProfileField
             label="Office"
@@ -220,7 +191,7 @@ function PersonalInformation({
   );
 }
 
-function TeacherOverview({ teacher, studentCount }) {
+function TeacherOverview({ teacher, studentCount, onPhotoUploaded }) {
   const classCount = toList(teacher.assignedClasses).length;
   const displayName =
     [teacher.title, teacher.fullName].filter(Boolean).join(" ") ||
@@ -229,12 +200,15 @@ function TeacherOverview({ teacher, studentCount }) {
   return (
     <section className="teacher-profile-card teacher-overview-card">
       <div className="teacher-profile-identity">
-        <div className="teacher-profile-avatar">
-          {getInitials(teacher.fullName)}
-        </div>
+        <AvatarUpload
+          collectionName="teacher"
+          uid={teacher.id}
+          name={teacher.fullName}
+          photoURL={teacher.photoURL}
+          onUploaded={onPhotoUploaded}
+        />
 
         <h2>{displayName}</h2>
-
         <p className="teacher-profile-staff-id">
           Staff ID: {teacher.staffId || "Not assigned"}
         </p>
@@ -243,7 +217,6 @@ function TeacherOverview({ teacher, studentCount }) {
           <span className="teacher-profile-department-tag">
             {teacher.department || teacher.subject || "Department not set"}
           </span>
-
           <span className="teacher-profile-employment-tag">
             {teacher.employmentType || "Employment type not set"}
           </span>
@@ -255,12 +228,10 @@ function TeacherOverview({ teacher, studentCount }) {
           <strong>{classCount}</strong>
           <span>Classes</span>
         </div>
-
         <div className="teacher-profile-stat">
           <strong>{studentCount}</strong>
           <span>Students</span>
         </div>
-
         <div className="teacher-profile-stat">
           <strong>{yearsSince(teacher.dateJoined)} yrs</strong>
           <span>At school</span>
@@ -275,16 +246,14 @@ function Qualifications({ teacher }) {
     {
       id: 1,
       title: "Qualification",
-      detail: teacher.qualification || "No qualification has been added yet.",
+      detail: teacher.qualification || "No qualification added yet.",
       icon: <FaGraduationCap />,
       color: "purple",
     },
     {
       id: 2,
       title: "Teaching certification",
-      detail:
-        teacher.certification ||
-        "Certification details have not been added yet.",
+      detail: teacher.certification || "Certification details missing.",
       icon: <FaCertificate />,
       color: "blue",
     },
@@ -302,7 +271,6 @@ function Qualifications({ teacher }) {
             <div className={`teacher-qualification-icon ${item.color}`}>
               {item.icon}
             </div>
-
             <div className="teacher-qualification-details">
               <h3>{item.title}</h3>
               <p>{item.detail}</p>
@@ -346,7 +314,6 @@ function EmploymentSummary({ teacher }) {
         {details.map((item) => (
           <div className="teacher-employment-row" key={item.label}>
             <span className="teacher-employment-label">{item.label}</span>
-
             <span className="teacher-employment-value">
               {item.value || "Not provided"}
             </span>
@@ -357,11 +324,8 @@ function EmploymentSummary({ teacher }) {
   );
 }
 
-/* ---------- Page ---------- */
-
 export default function TeacherProfile() {
-  const { user } = useAuth();
-
+  const { user, updateUser } = useAuth();
   const [teacher, setTeacher] = useState(emptyTeacher);
   const [originalTeacher, setOriginalTeacher] = useState(emptyTeacher);
   const [studentCount, setStudentCount] = useState(0);
@@ -371,11 +335,13 @@ export default function TeacherProfile() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
+  const activeUid = user?.uid || user?.id;
+
   useEffect(() => {
     let active = true;
 
     async function loadTeacherProfile() {
-      if (!user?.uid) {
+      if (!activeUid) {
         setLoading(false);
         setError("Please sign in to view your teacher profile.");
         return;
@@ -385,13 +351,11 @@ export default function TeacherProfile() {
       setError("");
 
       try {
-        let profile = await getTeacherProfile(user.uid);
+        let profile = await getTeacherProfile(activeUid);
 
-        // Create a teacher document if one does not exist yet.
         if (!profile) {
           await createTeacherProfile(user);
-
-          profile = await getTeacherProfile(user.uid);
+          profile = await getTeacherProfile(activeUid);
         }
 
         if (!active) return;
@@ -403,8 +367,11 @@ export default function TeacherProfile() {
         const loadedTeacher = {
           ...emptyTeacher,
           ...profile,
-          email: profile.email || user.email || "",
-          fullName: profile.fullName || user.displayName || "",
+          id: profile.id || activeUid,
+          photoURL: profile.photoURL || user?.photoURL || "",
+          email: profile.email || user?.email || "",
+          fullName:
+            profile.fullName || user?.displayName || user?.fullName || "",
           dateOfBirth: profile.dateOfBirth || "",
           phoneNumber: profile.phoneNumber || "",
           office: profile.office || "",
@@ -417,7 +384,6 @@ export default function TeacherProfile() {
         setTeacher(loadedTeacher);
         setOriginalTeacher(loadedTeacher);
 
-        // Count the students in this teacher's assigned classes
         try {
           const students = await getAssignedStudents(loadedTeacher);
           if (active) setStudentCount(students.length);
@@ -426,7 +392,6 @@ export default function TeacherProfile() {
         }
       } catch (err) {
         console.error("Error loading teacher profile:", err);
-
         if (active) {
           setError(err.message || "Unable to load your teacher profile.");
         }
@@ -440,16 +405,11 @@ export default function TeacherProfile() {
     return () => {
       active = false;
     };
-  }, [user?.uid]);
+  }, [user, activeUid]);
 
   function handleChange(event) {
     const { name, value } = event.target;
-
-    setTeacher((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
+    setTeacher((previous) => ({ ...previous, [name]: value }));
     setNotice("");
     setError("");
   }
@@ -468,8 +428,25 @@ export default function TeacherProfile() {
     setError("");
   }
 
+  async function handlePhotoUploaded(photoURL) {
+    setTeacher((previous) => ({
+      ...previous,
+      photoURL,
+    }));
+
+    setOriginalTeacher((previous) => ({
+      ...previous,
+      photoURL,
+    }));
+
+    if (typeof updateUser === "function") {
+      updateUser({ photoURL });
+    }
+
+    setNotice("Your profile picture has been updated.");
+  }
   async function handleSave() {
-    if (!user?.uid) {
+    if (!activeUid) {
       setError("You must be signed in to update your profile.");
       return;
     }
@@ -484,30 +461,31 @@ export default function TeacherProfile() {
     setNotice("");
 
     try {
-      // Teachers can only edit their personal details.
-      // Department, subjects and classes are assigned by the admin.
       const teacherData = {
         fullName: teacher.fullName.trim(),
         dateOfBirth: teacher.dateOfBirth,
         phoneNumber: teacher.phoneNumber.trim(),
         office: teacher.office.trim(),
+        photoURL: teacher.photoURL,
       };
 
-      await updateTeacherProfile(user.uid, teacherData);
+      await updateTeacherProfile(activeUid, teacherData);
 
-      const updatedTeacher = {
-        ...teacher,
-        ...teacherData,
-      };
-
+      const updatedTeacher = { ...teacher, ...teacherData };
       setTeacher(updatedTeacher);
       setOriginalTeacher(updatedTeacher);
       setEditing(false);
 
+      if (typeof updateUser === "function") {
+        updateUser({
+          fullName: teacherData.fullName,
+          photoURL: teacherData.photoURL,
+        });
+      }
+
       setNotice("Your teacher profile has been updated successfully.");
     } catch (err) {
       console.error("Error updating teacher profile:", err);
-
       setError(
         err.message || "Unable to update your profile. Please try again.",
       );
@@ -521,17 +499,6 @@ export default function TeacherProfile() {
       <main className="teacher-profile-page">
         <div className="teacher-profile-loading">
           Loading your teacher profile...
-        </div>
-      </main>
-    );
-  }
-
-  if (error && !teacher.email && !teacher.fullName) {
-    return (
-      <main className="teacher-profile-page">
-        <div className="teacher-profile-error">
-          <h2>Unable to load profile</h2>
-          <p>{error}</p>
         </div>
       </main>
     );
@@ -551,13 +518,10 @@ export default function TeacherProfile() {
               type="button"
               className="teacher-profile-secondary-button"
               onClick={() =>
-                setNotice(
-                  "Password changing should be connected to Firebase Authentication.",
-                )
+                setNotice("Password changes are managed via Firebase Auth.")
               }
             >
-              <FaKey />
-              Change password
+              <FaKey /> Change password
             </button>
 
             <button
@@ -592,7 +556,11 @@ export default function TeacherProfile() {
 
         <div className="teacher-profile-layout">
           <div className="teacher-profile-left-column">
-            <TeacherOverview teacher={teacher} studentCount={studentCount} />
+            <TeacherOverview
+              teacher={teacher}
+              studentCount={studentCount}
+              onPhotoUploaded={handlePhotoUploaded}
+            />
             <Qualifications teacher={teacher} />
           </div>
 
@@ -606,7 +574,6 @@ export default function TeacherProfile() {
               onCancel={handleCancel}
               saving={saving}
             />
-
             <EmploymentSummary teacher={teacher} />
           </div>
         </div>
