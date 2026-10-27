@@ -105,10 +105,10 @@ function LoginForm() {
         onChange={(e) => setPassword(e.target.value)}
         error={passwordError}
       />
-      <div className="forgot-password">
+      {/* <div className="forgot-password">
         <p>Remember me</p>
         <p>Forgot password?</p>
-      </div>
+      </div> */}
 
       <button className="loggin-btn" type="submit">
         {loading ? <Loader text = "loging you in..." />: "log in securely"}

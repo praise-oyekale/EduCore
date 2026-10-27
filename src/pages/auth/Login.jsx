@@ -15,7 +15,7 @@ function Login() {
             <p className="subtopic-login">sign in to continue to your  school portal</p>
           
             <LoginForm />
-            <p className="have-account">Don't have an account yet? {" "} <Link to="/apply" style={{textDecoration: "none", fontSize: "17px", fontWeight: 'bold', }}> Signup</Link> </p>
+            <p className="have-account">Don't have an account yet? {" "} <Link to="/apply" style={{textDecoration: "none", fontSize: "17px", fontWeight: 'bold', }}> Apply</Link> </p>
         </div>
       </div> 
     </div>
