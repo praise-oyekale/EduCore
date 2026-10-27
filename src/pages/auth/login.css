@@ -12,7 +12,7 @@
     grid-template-columns: 50% 50%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
-    padding: 5px;
+    padding: 8px;
     justify-content: center;
     align-items: center;
     
@@ -40,16 +40,22 @@
 @media (max-width: 1000px){
     .login-contents{
         display: block;
+
     }
     .loginpage-welcome{
         display: none;
     }
 }
 @media (max-width: 768px){
+    .login-contents{
+        width: 90%;
+        padding: 15px;
+    }
     .login-details h1{
         font-size: 30px;
     }
     .login-details p{
         font-size: 13px;
     }
+    
 }

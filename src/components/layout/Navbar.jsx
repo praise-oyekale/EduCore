@@ -7,7 +7,7 @@ function Navbar() {
     <div className="nav-container">
       <img src={mySchoolLogo} alt="nav-logo" className="nav-logo" />
       <div className="nav-features-container">
-        <h3 className="nav-feature-text"><a href="#feature-cards">Features</a></h3>
+        <h3 className="nav-feature-text"><a  href="#feature-cards">Features</a></h3>
         <h3 className="nav-contact-text">Contacts</h3>
       </div>
       <div className="nav-buttons">

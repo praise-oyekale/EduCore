@@ -1,81 +1,356 @@
+/* ==============================
+   DASHBOARD NAVBAR
+================================ */
+
+.dashboard-navbar,
+.dashboard-navbar *,
+.dashboard-navbar *::before,
+.dashboard-navbar *::after {
+  box-sizing: border-box;
+}
+
 .dashboard-navbar {
-  /* width: 100%; */
+  width: 100%;
+  min-height: 64px;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  color: black;
-  padding: 10px;
-  gap: 10px;
-    /* margin-left: 250px; */
+  color: #111827;
+  padding: 10px 24px;
+  gap: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  position: relative;
+  z-index: 20;
 }
+
+/* ==============================
+   HAMBURGER BUTTON
+================================ */
+
 .nav-harmburger {
   display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
+.nav-harmburger:hover {
+  background-color: #f8fafc;
+}
+
+/* ==============================
+   NAVBAR RIGHT CONTENTS
+================================ */
+
 .nav-left-contents {
   display: flex;
   align-items: center;
-  justify-content: end;
-  gap: 10px;
-}
-.dashboardnav-messages {
-  box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  color: #64748b;
-  border-radius: 8px;
-}
-.dashboardnav-notification {
-  box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  color: #64748b;
-  border-radius: 8px;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: 0;
 }
 
-.dashboardnav-profile-chip {
-  box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
-  border-radius: 10px;
+/* ==============================
+   MESSAGES BUTTON
+================================ */
+
+.dashboardnav-messages {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 10px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman";
-  margin-right: 18px;
-  padding: 9px;
+  justify-content: center;
+  color: #64748b;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
+.dashboardnav-messages:hover {
+  background-color: #f8fafc;
+}
+
+/* ==============================
+   NOTIFICATION BUTTON
+================================ */
+
+.dashboardnav-notification {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dashboardnav-notification:hover {
+  background-color: #f8fafc;
+}
+
+/* ==============================
+   PROFILE CHIP
+================================ */
+
+.dashboardnav-profile-chip {
+  min-width: 0;
+  max-width: 260px;
+  padding: 8px 12px;
+  margin-right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: Cambria, Cochin, Georgia, "Times New Roman", serif;
+}
+
+/* ==============================
+   PROFILE AVATAR
+================================ */
+
 .dashboardnav-avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #6d71e9;
   background-color: #f4f1fd;
-  padding: 7px;
   border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
 }
+
+/* ==============================
+   PROFILE NAME AND ROLE
+================================ */
+
+.dashboardnav-profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+
 .dashboardnav-profile-name {
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.4;
   font-weight: 600;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
 .dashboardnav-role {
   font-size: 12px;
+  line-height: 1.4;
   color: #98a2b3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+/* ==============================
+   TABLETS
+================================ */
+
+@media (max-width: 1024px) {
+  .dashboard-navbar {
+    padding: 10px 18px;
+    gap: 10px;
+  }
+
+  .nav-left-contents {
+    gap: 10px;
+  }
+
+  .dashboardnav-profile-chip {
+    max-width: 220px;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .dashboardnav-profile-name {
+    font-size: 13px;
+  }
+}
+
+/* ==============================
+   MOBILE
+================================ */
 
 @media (max-width: 768px) {
   .dashboard-navbar {
-    display: flex;
-    justify-content: space-between;
-  }
-  .dashboardnav-profile-chip {
-    margin-right: 0px;
-  }
-  .nav-harmburger {
-    display: block;
-    box-shadow: 0px 0px 0px 1px rgba(155, 148, 148, 0.1);
-    padding: 10px;
+    width: 100%;
+    min-height: 60px;
+    padding: 9px 16px;
     display: flex;
     align-items: center;
-    border-radius: 10px;
-    font-size: 18px;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .nav-harmburger {
+    display: flex;
+  }
+
+  .nav-left-contents {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .dashboardnav-messages,
+  .dashboardnav-notification {
+    min-width: 38px;
+    min-height: 38px;
+    padding: 9px;
+  }
+
+  .dashboardnav-profile-chip {
+    max-width: 190px;
+    padding: 6px 8px;
+    gap: 7px;
+  }
+
+  .dashboardnav-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    font-size: 12px;
+  }
+
+  .dashboardnav-profile-name {
+    font-size: 12px;
+    max-width: 110px;
+  }
+
+  .dashboardnav-role {
+    font-size: 11px;
+  }
+}
+
+/* ==============================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 480px) {
+  .dashboard-navbar {
+    min-height: 58px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .nav-harmburger {
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    font-size: 17px;
+  }
+
+  .nav-left-contents {
+    gap: 6px;
+  }
+
+  .dashboardnav-messages,
+  .dashboardnav-notification {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 7px;
+    border-radius: 8px;
+  }
+
+  .dashboardnav-profile-chip {
+    max-width: 145px;
+    padding: 5px 6px;
+    gap: 6px;
+  }
+
+  .dashboardnav-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+
+  .dashboardnav-profile-name {
+    font-size: 11px;
+    max-width: 85px;
+  }
+
+  .dashboardnav-role {
+    font-size: 10px;
+  }
+}
+
+/* ==============================
+   VERY SMALL PHONES
+================================ */
+
+@media (max-width: 360px) {
+  .dashboard-navbar {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .nav-harmburger {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-left-contents {
+    gap: 5px;
+  }
+
+  .dashboardnav-messages,
+  .dashboardnav-notification {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 6px;
+  }
+
+  .dashboardnav-profile-chip {
+    max-width: 112px;
+    gap: 5px;
+    padding: 4px;
+  }
+
+  .dashboardnav-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dashboardnav-profile-name {
+    max-width: 65px;
+    font-size: 10px;
+  }
+
+  .dashboardnav-role {
+    font-size: 9px;
   }
 }

@@ -1,29 +1,51 @@
-.results-page-container {
-  background: #f4f6f9;
-  min-height: 100vh;
-  padding: 32px 28px;
+/* ==============================
+   RESULTS PAGE
+================================ */
+
+.results-page-container,
+.results-page-container *,
+.results-page-container *::before,
+.results-page-container *::after {
   box-sizing: border-box;
 }
 
-/* Header */
+.results-page-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 28px;
+  background: #f4f6f9;
+  overflow-x: clip;
+}
+
+/* ==============================
+   HEADER
+================================ */
+
 .results-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   margin-bottom: 24px;
+}
+
+.results-header-title {
+  min-width: 0;
 }
 
 .results-header-title h2 {
   font-size: 26px;
+  line-height: 1.4;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
 }
 
 .results-header-title p {
   font-size: 14px;
+  line-height: 1.6;
   color: #64748b;
   margin: 0;
 }
@@ -31,29 +53,39 @@
 .results-header-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
-/* Term Switcher Pills */
+/* ==============================
+   TERM FILTER PILLS
+================================ */
+
 .term-filter-pills {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   background-color: #e2e8f0;
   padding: 4px;
   border-radius: 12px;
   gap: 4px;
+  max-width: 100%;
 }
 
 .term-pill {
   background: transparent;
   border: none;
-  padding: 8px 16px;
+  padding: 9px 14px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   color: #475569;
+  white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .term-pill.active {
@@ -62,18 +94,24 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Download Transcript Button */
+/* ==============================
+   DOWNLOAD BUTTON
+================================ */
+
 .download-transcript-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: #2563eb;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 11px 18px;
+  min-height: 42px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -87,22 +125,27 @@
   cursor: not-allowed;
 }
 
-/* 4 Stat Cards Grid */
+/* ==============================
+   STATISTICS GRID
+================================ */
+
 .results-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
 .res-stat-card {
+  min-width: 0;
   background: #ffffff;
   border-radius: 16px;
-  padding: 20px;
+  padding: 22px;
   border: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
@@ -110,12 +153,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 2px;
 }
 
 .res-icon-bg {
   width: 40px;
   height: 40px;
+  flex-shrink: 0;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -151,7 +197,7 @@
   color: #15803d;
   font-size: 12px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 9999px;
 }
 
@@ -163,49 +209,64 @@
   color: #c2410c;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 9999px;
 }
 
 .res-status-badge {
+  display: inline-block;
   background-color: #ffedd5;
   color: #c2410c;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 9999px;
   text-transform: lowercase;
 }
 
+.res-stat-body {
+  min-width: 0;
+}
+
 .res-stat-body h3 {
   font-size: 26px;
+  line-height: 1.3;
   font-weight: 800;
   color: #0f172a;
-  margin: 0 0 2px 0;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
 }
 
 .res-stat-body p {
   font-size: 13px;
+  line-height: 1.5;
   color: #64748b;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-/* Main Content Split */
+/* ==============================
+   MAIN CONTENT LAYOUT
+================================ */
+
 .results-content-split {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 20px;
   align-items: start;
+  min-width: 0;
 }
 
-@media (max-width: 1024px) {
-  .results-content-split {
-    grid-template-columns: 1fr;
-  }
+.results-content-split > * {
+  min-width: 0;
 }
 
-/* Grade Report Table Card */
+/* ==============================
+   GRADE REPORT CARD
+================================ */
+
 .grade-report-card {
+  min-width: 0;
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
@@ -217,6 +278,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
   padding-bottom: 16px;
   border-bottom: 1px solid #f1f5f9;
   margin-bottom: 12px;
@@ -224,6 +287,7 @@
 
 .report-card-header h3 {
   font-size: 18px;
+  line-height: 1.4;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
@@ -235,12 +299,17 @@
   font-weight: 500;
 }
 
+/* Allow the table to scroll without stretching the page */
 .report-table-wrapper {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .report-table {
   width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
 }
 
@@ -249,9 +318,10 @@
   font-size: 11px;
   font-weight: 700;
   color: #94a3b8;
-  padding: 10px 12px;
+  padding: 12px;
   border-bottom: 1px solid #f1f5f9;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .report-table td {
@@ -259,6 +329,10 @@
   border-bottom: 1px solid #f8fafc;
   vertical-align: middle;
   font-size: 14px;
+}
+
+.report-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .course-name-cell {
@@ -271,15 +345,20 @@
 .points-cell {
   color: #475569;
   font-weight: 500;
+  white-space: nowrap;
 }
 
-/* Grade Badges */
+/* ==============================
+   GRADE BADGES
+================================ */
+
 .res-grade-pill {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .badge-a {
@@ -308,49 +387,69 @@
   color: #b91c1c;
 }
 
-/* Right Column Cards */
+/* ==============================
+   RIGHT COLUMN CARDS
+================================ */
+
 .results-right-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .gpa-trend-card,
 .grade-distribution-card {
+  width: 100%;
+  min-width: 0;
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
-  padding: 20px;
+  padding: 22px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .gpa-trend-card h3,
 .grade-distribution-card h3 {
   font-size: 16px;
+  line-height: 1.4;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 16px 0;
+  margin: 0 0 16px;
 }
 
 .trend-chart-wrapper {
+  width: 100%;
+  min-width: 0;
   margin-top: 8px;
 }
 
-/* Distribution Donut Body */
+/* Prevent responsive chart containers from overflowing */
+.trend-chart-wrapper > *,
+.trend-chart-wrapper .recharts-responsive-container {
+  max-width: 100%;
+}
+
+/* ==============================
+   GRADE DISTRIBUTION
+================================ */
+
 .distribution-body {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
+  min-width: 0;
 }
 
 .distribution-donut-ring {
   width: 90px;
   height: 90px;
+  flex: 0 0 90px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .donut-center-hole {
@@ -364,12 +463,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 
 .legend-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .dot {
@@ -393,7 +494,9 @@
 
 .legend-label {
   font-size: 13px;
+  line-height: 1.5;
   color: #475569;
+  overflow-wrap: anywhere;
 }
 
 .legend-label strong {
@@ -401,10 +504,227 @@
   font-weight: 600;
 }
 
+/* ==============================
+   EMPTY STATES
+================================ */
+
 .report-empty-state,
 .chart-empty-state {
   text-align: center;
-  padding: 30px;
+  padding: 30px 20px;
   color: #94a3b8;
   font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ==============================
+   TABLETS AND SMALL LAPTOPS
+================================ */
+
+@media (max-width: 1100px) {
+  .results-page-container {
+    padding: 26px 22px;
+  }
+
+  .results-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .results-content-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .results-right-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+/* ==============================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .results-page-container {
+    padding: 22px 18px;
+  }
+
+  .results-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .results-header-title h2 {
+    font-size: 23px;
+  }
+
+  .results-header-title p {
+    font-size: 13px;
+  }
+
+  .results-header-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .term-filter-pills {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .term-pill {
+    padding: 10px 5px;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .download-transcript-btn {
+    width: 100%;
+    white-space: normal;
+  }
+
+  .results-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .res-stat-card {
+    padding: 18px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+
+  .res-stat-body h3 {
+    font-size: 23px;
+  }
+
+  .res-stat-body p {
+    font-size: 12px;
+  }
+
+  .res-stat-top {
+    align-items: flex-start;
+  }
+
+  .res-icon-bg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .results-content-split {
+    gap: 16px;
+  }
+
+  .grade-report-card {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .report-card-header {
+    align-items: flex-start;
+  }
+
+  .report-card-header h3 {
+    font-size: 16px;
+  }
+
+  .results-right-column {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .gpa-trend-card,
+  .grade-distribution-card {
+    padding: 20px;
+  }
+
+  .distribution-body {
+    gap: 18px;
+  }
+
+  .report-empty-state,
+  .chart-empty-state {
+    padding: 24px 14px;
+  }
+}
+
+/* ==============================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 400px) {
+  .results-page-container {
+    padding: 18px 12px;
+  }
+
+  .results-header-title h2 {
+    font-size: 21px;
+  }
+
+  .term-pill {
+    font-size: 11px;
+    padding: 9px 3px;
+  }
+
+  .results-stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .res-stat-card {
+    padding: 18px;
+  }
+
+  .res-stat-top {
+    align-items: center;
+  }
+
+  .res-stat-body h3 {
+    font-size: 24px;
+  }
+
+  .grade-report-card {
+    padding: 16px 12px;
+  }
+
+  .report-card-header h3 {
+    font-size: 15px;
+  }
+
+  .courses-count-text {
+    font-size: 12px;
+  }
+
+  .gpa-trend-card,
+  .grade-distribution-card {
+    padding: 17px;
+  }
+
+  .distribution-body {
+    gap: 14px;
+  }
+
+  .distribution-donut-ring {
+    width: 76px;
+    height: 76px;
+    flex-basis: 76px;
+  }
+
+  .donut-center-hole {
+    width: 48px;
+    height: 48px;
+  }
+
+  .legend-label {
+    font-size: 12px;
+  }
 }

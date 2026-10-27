@@ -1,71 +1,110 @@
-.subjects-page-container {
-  padding: 24px;
-  /* max-width: 1200px; */
-  margin: 0 auto;
-    background: #f4f6f9;
-    min-height: 100vh;
+/* ==============================
+   SUBJECTS PAGE
+================================ */
+
+.subjects-page-container,
+.subjects-page-container *,
+.subjects-page-container *::before,
+.subjects-page-container *::after {
+  box-sizing: border-box;
 }
 
-/* Header Section */
+.subjects-page-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 28px;
+  margin: 0 auto;
+  background: #f4f6f9;
+  overflow-x: clip;
+}
+
+/* ==============================
+   HEADER SECTION
+================================ */
+
 .subjects-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
+  margin-bottom: 28px;
+}
+
+.subjects-header-title {
+  min-width: 0;
 }
 
 .subjects-header-title h2 {
   font-size: 24px;
+  line-height: 1.4;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
 }
 
 .subjects-header-title p {
   font-size: 14px;
+  line-height: 1.6;
   color: #64748b;
   margin: 0;
 }
 
-/* Decorative Header Pill */
+/* ==============================
+   ACTIVE SUBJECTS BADGE
+================================ */
+
 .subjects-active-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: #eff6ff;
   border: 1px solid #bfdbfe;
   color: #1d4ed8;
-  padding: 8px 16px;
+  padding: 9px 16px;
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
 }
 
 .badge-icon {
   font-size: 15px;
+  flex-shrink: 0;
 }
 
-/* Grid Layout */
+/* ==============================
+   SUBJECT GRID
+================================ */
+
 .subjects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
+  align-items: stretch;
 }
 
-/* Subject Card */
+/* ==============================
+   SUBJECT CARD
+================================ */
+
 .subject-card {
+  min-width: 0;
+  width: 100%;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 20px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .subject-card:hover {
@@ -73,17 +112,22 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Card Header */
+/* ==============================
+   CARD HEADER
+================================ */
+
 .subject-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .subject-icon-wrapper {
   width: 44px;
   height: 44px;
+  flex-shrink: 0;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -91,7 +135,6 @@
   font-size: 18px;
 }
 
-/* Color variations for icon containers */
 .icon-theme-0 {
   background-color: #eff6ff;
   color: #2563eb;
@@ -117,37 +160,60 @@
   font-weight: 600;
   color: #94a3b8;
   letter-spacing: 0.5px;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
-/* Subject Info */
+/* ==============================
+   SUBJECT INFORMATION
+================================ */
+
+.subject-card-body {
+  min-width: 0;
+}
+
 .subject-card-body h3 {
   font-size: 18px;
+  line-height: 1.5;
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 6px 0;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
 }
 
 .subject-meta-text {
   font-size: 13px;
+  line-height: 1.6;
   color: #64748b;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-/* Divider Line */
+/* ==============================
+   CARD DIVIDER
+================================ */
+
 .subject-card-divider {
+  width: 100%;
   height: 1px;
+  flex-shrink: 0;
   background-color: #f1f5f9;
-  margin: 18px 0;
+  margin: 20px 0;
 }
 
-/* Card Footer Action */
+/* ==============================
+   CARD FOOTER
+================================ */
+
 .subject-card-footer {
   display: flex;
   width: 100%;
+  margin-top: auto;
 }
 
 .subject-resource-button {
   width: 100%;
+  min-height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,12 +221,16 @@
   background-color: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
-  padding: 10px 16px;
+  padding: 11px 14px;
   font-size: 13px;
   font-weight: 600;
   color: #334155;
+  text-align: center;
+  overflow-wrap: anywhere;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .subject-resource-button:hover {
@@ -172,17 +242,22 @@
 .btn-folder-icon {
   font-size: 14px;
   color: #475569;
+  flex-shrink: 0;
 }
 
-/* Empty & Loading States */
+/* ==============================
+   EMPTY AND LOADING STATES
+================================ */
+
 .subjects-empty-card,
 .subjects-loading-state {
+  width: 100%;
+  max-width: 500px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 48px 24px;
   text-align: center;
-  max-width: 500px;
   margin: 40px auto;
 }
 
@@ -193,13 +268,169 @@
 }
 
 .subjects-empty-card h3 {
-  margin: 0 0 8px 0;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 8px;
   color: #1e293b;
+  overflow-wrap: anywhere;
 }
 
 .subjects-empty-card p,
 .subjects-loading-state p {
   color: #64748b;
   font-size: 14px;
+  line-height: 1.6;
   margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ==============================
+   TABLETS
+================================ */
+
+@media (max-width: 1100px) {
+  .subjects-page-container {
+    padding: 24px;
+  }
+
+  .subjects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .subject-card {
+    padding: 20px;
+  }
+}
+
+/* ==============================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .subjects-page-container {
+    padding: 22px 18px;
+  }
+
+  .subjects-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .subjects-header-title h2 {
+    font-size: 22px;
+  }
+
+  .subjects-header-title p {
+    font-size: 13px;
+  }
+
+  .subjects-active-badge {
+    padding: 8px 13px;
+    font-size: 12px;
+  }
+
+  .subjects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .subject-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .subject-card-top {
+    margin-bottom: 15px;
+    gap: 8px;
+  }
+
+  .subject-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .subject-code {
+    font-size: 11px;
+  }
+
+  .subject-card-body h3 {
+    font-size: 16px;
+  }
+
+  .subject-meta-text {
+    font-size: 12px;
+  }
+
+  .subject-card-divider {
+    margin: 16px 0;
+  }
+
+  .subject-resource-button {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .subjects-empty-card,
+  .subjects-loading-state {
+    padding: 36px 20px;
+    margin: 24px auto;
+  }
+}
+
+/* ==============================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 480px) {
+  .subjects-page-container {
+    padding: 18px 14px;
+  }
+
+  .subjects-header-title h2 {
+    font-size: 21px;
+  }
+
+  .subjects-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .subject-card {
+    padding: 20px;
+  }
+
+  .subject-card-top {
+    margin-bottom: 16px;
+  }
+
+  .subject-card-body h3 {
+    font-size: 17px;
+  }
+
+  .subject-meta-text {
+    font-size: 13px;
+  }
+
+  .subject-card-divider {
+    margin: 18px 0;
+  }
+
+  .subject-resource-button {
+    min-height: 44px;
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+
+  .subjects-empty-card,
+  .subjects-loading-state {
+    padding: 30px 18px;
+  }
+
+  .empty-state-icon {
+    font-size: 32px;
+  }
 }

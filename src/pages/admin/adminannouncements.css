@@ -1,16 +1,28 @@
+/* ========================================
+   ADMIN ANNOUNCEMENTS PAGE
+======================================== */
+
 .admin-announcements-page {
   width: 100%;
   max-width: 1500px;
+  min-height: 100vh;
   margin: 0 auto;
   padding: 30px;
   color: #111827;
   box-sizing: border-box;
   background: #f4f6f9;
+  overflow-wrap: anywhere;
 }
 
-.admin-announcements-page * {
+.admin-announcements-page *,
+.admin-announcements-page *::before,
+.admin-announcements-page *::after {
   box-sizing: border-box;
 }
+
+/* ========================================
+   PAGE HEADER
+======================================== */
 
 .announcements-header {
   margin-bottom: 26px;
@@ -20,7 +32,9 @@
   margin: 0 0 7px;
   font-size: 27px;
   font-weight: 700;
+  line-height: 1.3;
   color: #111827;
+  overflow-wrap: anywhere;
 }
 
 .announcements-header p,
@@ -28,16 +42,23 @@
   margin: 0;
   color: #64748b;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
+
+/* ========================================
+   MAIN CARDS
+======================================== */
 
 .announcement-create-card,
 .announcement-list-section {
+  width: 100%;
+  min-width: 0;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .announcement-create-card h2,
@@ -45,17 +66,24 @@
   margin: 0 0 7px;
   font-size: 19px;
   font-weight: 650;
+  line-height: 1.45;
   color: #111827;
+  overflow-wrap: anywhere;
 }
 
 .announcement-section-description {
   margin-bottom: 22px;
 }
 
+/* ========================================
+   ANNOUNCEMENT FORM
+======================================== */
+
 .announcement-form {
   display: flex;
   flex-direction: column;
   gap: 19px;
+  min-width: 0;
 }
 
 .announcement-form-field {
@@ -63,30 +91,36 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  width: 100%;
 }
 
 .announcement-form-field label {
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.5;
   color: #334155;
 }
 
 .announcement-form-field input,
 .announcement-form-field textarea,
 .announcement-form-field select {
+  display: block;
   width: 100%;
   min-width: 0;
-  padding: 12px 14px;
+  min-height: 44px;
+  padding: 11px 14px;
   border: 1px solid #dbe2ea;
-  border-radius: 8px;
+  border-radius: 9px;
   outline: none;
   background: #ffffff;
   color: #111827;
-  font: inherit;
+  font-family: inherit;
   font-size: 14px;
+  line-height: 1.5;
   transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .announcement-form-field input:focus,
@@ -96,50 +130,86 @@
   box-shadow: 0 0 0 3px rgb(37 99 235 / 10%);
 }
 
-.announcement-form-field textarea {
-  resize: vertical;
-  min-height: 110px;
-  line-height: 1.6;
+.announcement-form-field input::placeholder,
+.announcement-form-field textarea::placeholder {
+  color: #94a3b8;
 }
+
+.announcement-form-field input:disabled,
+.announcement-form-field textarea:disabled,
+.announcement-form-field select:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.announcement-form-field textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+/* ========================================
+   FORM BOTTOM CONTROLS
+======================================== */
 
 .announcement-form-bottom {
   display: flex;
-  align-items: end;
-  gap: 20px;
+  align-items: flex-end;
   flex-wrap: wrap;
+  gap: 18px;
+  min-width: 0;
 }
 
 .announcement-category-field {
   width: 190px;
+  max-width: 100%;
+  flex-shrink: 0;
 }
 
 .announcement-pin-option {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding-bottom: 13px;
+  min-height: 44px;
+  padding-bottom: 12px;
   color: #475569;
   font-size: 13px;
+  line-height: 1.5;
   cursor: pointer;
 }
 
 .announcement-pin-option input {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+  margin: 0;
   accent-color: #2563eb;
+  cursor: pointer;
 }
 
 .announcement-publish-button,
 .announcement-refresh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
   border: 1px solid #2563eb;
-  border-radius: 8px;
-  padding: 12px 17px;
+  border-radius: 9px;
+  padding: 11px 17px;
   background: #2563eb;
   color: #ffffff;
+  font-family: inherit;
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .announcement-publish-button {
@@ -149,6 +219,7 @@
 .announcement-publish-button:hover,
 .announcement-refresh-button:hover {
   background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .announcement-publish-button:disabled,
@@ -158,12 +229,21 @@
   cursor: not-allowed;
 }
 
+/* ========================================
+   ANNOUNCEMENT LIST HEADER
+======================================== */
+
 .announcement-list-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
   margin-bottom: 20px;
+  min-width: 0;
+}
+
+.announcement-list-heading > div {
+  min-width: 0;
 }
 
 .announcement-list-heading .announcement-section-description {
@@ -171,6 +251,7 @@
 }
 
 .announcement-refresh-button {
+  flex-shrink: 0;
   background: #ffffff;
   color: #334155;
   border-color: #dbe2ea;
@@ -178,7 +259,13 @@
 
 .announcement-refresh-button:hover {
   background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
 }
+
+/* ========================================
+   FILTER BUTTONS
+======================================== */
 
 .announcement-filters {
   display: flex;
@@ -188,13 +275,30 @@
 }
 
 .announcement-filters button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 15px;
   border: 1px solid #dbe2ea;
   border-radius: 8px;
-  padding: 9px 15px;
   background: #ffffff;
   color: #475569;
+  font-family: inherit;
   font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.announcement-filters button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .announcement-filters button.active {
@@ -203,10 +307,15 @@
   border-color: #0f172a;
 }
 
+/* ========================================
+   ANNOUNCEMENT LIST
+======================================== */
+
 .announcement-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
 }
 
 .announcement-item {
@@ -214,37 +323,52 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
+  min-width: 0;
   padding: 20px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.announcement-item:hover {
+  border-color: #cbd5e1;
 }
 
 .announcement-item.is-pinned {
   border-left: 4px solid #2563eb;
+  padding-left: 17px;
 }
 
 .announcement-item-content {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
 .announcement-item-meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   margin-bottom: 11px;
 }
 
 .announcement-category-badge,
 .announcement-pinned-badge {
-  display: inline-block;
-  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  border-radius: 6px;
   padding: 5px 9px;
   background: #eff6ff;
   color: #1d4ed8;
   font-size: 11px;
   font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .announcement-pinned-badge {
@@ -256,7 +380,8 @@
   margin: 0 0 8px;
   font-size: 16px;
   font-weight: 650;
-  line-height: 1.5;
+  line-height: 1.55;
+  color: #111827;
   overflow-wrap: anywhere;
 }
 
@@ -264,72 +389,117 @@
   margin: 0 0 12px;
   color: #475569;
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.8;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .announcement-item-footer {
   margin: 0;
   color: #94a3b8;
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
+/* ========================================
+   DELETE BUTTON
+======================================== */
+
 .announcement-delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  min-height: 36px;
   border: 1px solid #fecaca;
-  border-radius: 7px;
-  padding: 8px 11px;
+  border-radius: 8px;
+  padding: 8px 12px;
   background: #ffffff;
   color: #b91c1c;
+  font-family: inherit;
   font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .announcement-delete-button:hover {
   background: #fef2f2;
+  border-color: #fca5a5;
 }
 
+/* ========================================
+   EMPTY STATE
+======================================== */
+
 .announcement-empty-state {
-  padding: 38px 20px;
+  padding: 40px 20px;
   border: 1px dashed #cbd5e1;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: center;
   color: #64748b;
+  background: #f8fafc;
 }
 
 .announcement-empty-state h3 {
   margin: 0 0 8px;
   color: #334155;
   font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
 }
 
 .announcement-empty-state p {
   margin: 0;
   font-size: 13px;
+  line-height: 1.7;
 }
+
+/* ========================================
+   SUCCESS AND ERROR MESSAGES
+======================================== */
 
 .announcement-message {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 15px;
   padding: 13px 15px;
   margin-bottom: 18px;
   border: 1px solid #bbf7d0;
-  border-radius: 8px;
+  border-radius: 9px;
   background: #f0fdf4;
   color: #166534;
   font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .announcement-message button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px;
   border: none;
+  border-radius: 6px;
   background: transparent;
   color: inherit;
+  font-family: inherit;
   font-size: 12px;
   cursor: pointer;
+}
+
+.announcement-message button:hover {
+  background: rgb(22 101 52 / 8%);
 }
 
 .announcement-message.announcement-error {
@@ -338,27 +508,81 @@
   color: #b91c1c;
 }
 
+.announcement-message.announcement-error button:hover {
+  background: rgb(185 28 28 / 8%);
+}
+
+/* ========================================
+   TABLET RESPONSIVENESS
+======================================== */
+
+@media (max-width: 1024px) {
+  .admin-announcements-page {
+    padding: 24px;
+  }
+
+  .announcement-create-card,
+  .announcement-list-section {
+    padding: 22px;
+  }
+
+  .announcement-form-bottom {
+    gap: 14px;
+  }
+
+  .announcement-item {
+    gap: 16px;
+    padding: 18px;
+  }
+}
+
+/* ========================================
+   SMALL TABLETS
+======================================== */
+
 @media (max-width: 768px) {
   .admin-announcements-page {
     padding: 20px 16px;
   }
 
+  .announcements-header {
+    margin-bottom: 22px;
+  }
+
+  .announcements-header h1 {
+    font-size: 25px;
+  }
+
   .announcement-create-card,
   .announcement-list-section {
-    padding: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 13px;
+  }
+
+  .announcement-create-card h2,
+  .announcement-list-heading h2 {
+    font-size: 18px;
+  }
+
+  .announcement-form {
+    gap: 17px;
   }
 
   .announcement-form-bottom {
     align-items: stretch;
     flex-direction: column;
-    gap: 15px;
+    gap: 14px;
   }
 
   .announcement-category-field {
     width: 100%;
+    max-width: none;
   }
 
   .announcement-pin-option {
+    align-self: flex-start;
+    min-height: 36px;
     padding-bottom: 0;
   }
 
@@ -366,29 +590,250 @@
     width: 100%;
     margin-left: 0;
   }
-}
-
-@media (max-width: 480px) {
-  .announcements-header h1 {
-    font-size: 23px;
-  }
 
   .announcement-list-heading {
     align-items: flex-start;
   }
 
-  .announcement-item {
-    flex-direction: column;
-    padding: 16px;
-    gap: 14px;
+  .announcement-refresh-button {
+    min-height: 40px;
   }
 
-  .announcement-delete-button {
-    align-self: flex-start;
+  .announcement-item {
+    gap: 14px;
+    padding: 17px;
+  }
+}
+
+/* ========================================
+   MOBILE PHONES
+======================================== */
+
+@media (max-width: 480px) {
+  .admin-announcements-page {
+    padding: 14px 12px;
+  }
+
+  .announcements-header {
+    margin-bottom: 18px;
+  }
+
+  .announcements-header h1 {
+    font-size: 23px;
+    line-height: 1.4;
+  }
+
+  .announcements-header p,
+  .announcement-section-description {
+    font-size: 13px;
+    line-height: 1.7;
   }
 
   .announcement-create-card,
   .announcement-list-section {
-    padding: 15px;
+    padding: 16px 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+
+  .announcement-create-card h2,
+  .announcement-list-heading h2 {
+    font-size: 17px;
+  }
+
+  .announcement-section-description {
+    margin-bottom: 18px;
+  }
+
+  .announcement-form {
+    gap: 16px;
+  }
+
+  .announcement-form-field {
+    gap: 7px;
+  }
+
+  .announcement-form-field label {
+    font-size: 12px;
+  }
+
+  .announcement-form-field input,
+  .announcement-form-field textarea,
+  .announcement-form-field select {
+    min-height: 43px;
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+
+  .announcement-form-field textarea {
+    min-height: 120px;
+  }
+
+  .announcement-form-bottom {
+    gap: 12px;
+  }
+
+  .announcement-publish-button,
+  .announcement-refresh-button {
+    min-height: 42px;
+    padding: 11px 13px;
+    font-size: 13px;
+  }
+
+  .announcement-list-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .announcement-refresh-button {
+    align-self: flex-start;
+  }
+
+  .announcement-filters {
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .announcement-filters button {
+    min-height: 36px;
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+
+  .announcement-list {
+    gap: 12px;
+  }
+
+  .announcement-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 11px;
+  }
+
+  .announcement-item.is-pinned {
+    padding-left: 13px;
+  }
+
+  .announcement-item-meta {
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+
+  .announcement-category-badge,
+  .announcement-pinned-badge {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .announcement-item h3 {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .announcement-item-message {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .announcement-item-footer {
+    font-size: 11px;
+  }
+
+  .announcement-delete-button {
+    align-self: flex-start;
+    min-height: 37px;
+    padding: 9px 12px;
+  }
+
+  .announcement-empty-state {
+    padding: 30px 14px;
+  }
+
+  .announcement-empty-state h3 {
+    font-size: 15px;
+  }
+
+  .announcement-empty-state p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .announcement-message {
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   VERY SMALL PHONES
+======================================== */
+
+@media (max-width: 360px) {
+  .admin-announcements-page {
+    padding: 12px 9px;
+  }
+
+  .announcements-header h1 {
+    font-size: 21px;
+  }
+
+  .announcement-create-card,
+  .announcement-list-section {
+    padding: 14px 11px;
+  }
+
+  .announcement-form-field input,
+  .announcement-form-field textarea,
+  .announcement-form-field select {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .announcement-filters {
+    gap: 6px;
+  }
+
+  .announcement-filters button {
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+
+  .announcement-item {
+    padding: 13px;
+  }
+
+  .announcement-item.is-pinned {
+    padding-left: 10px;
+  }
+
+  .announcement-item h3 {
+    font-size: 14px;
+  }
+
+  .announcement-item-message {
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-form-field input,
+  .announcement-form-field textarea,
+  .announcement-form-field select,
+  .announcement-publish-button,
+  .announcement-refresh-button,
+  .announcement-filters button,
+  .announcement-item,
+  .announcement-delete-button {
+    transition: none;
   }
 }

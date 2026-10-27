@@ -1,29 +1,51 @@
-.attendance-page-container {
-  background: #f4f6f9;
-  min-height: 100vh;
-  padding: 32px 28px;
+/* ==============================
+   ATTENDANCE PAGE
+================================ */
+
+.attendance-page-container,
+.attendance-page-container *,
+.attendance-page-container *::before,
+.attendance-page-container *::after {
   box-sizing: border-box;
 }
 
-/* Header */
+.attendance-page-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 28px;
+  background: #f4f6f9;
+  overflow-x: clip;
+}
+
+/* ==============================
+   HEADER
+================================ */
+
 .attendance-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   margin-bottom: 24px;
+}
+
+.attendance-header-info {
+  min-width: 0;
 }
 
 .attendance-header-info h2 {
   font-size: 26px;
+  line-height: 1.4;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
 }
 
 .attendance-header-info p {
   font-size: 14px;
+  line-height: 1.6;
   color: #64748b;
   margin: 0;
 }
@@ -31,29 +53,39 @@
 .attendance-header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
-/* Class Filter Pills */
+/* ==============================
+   CLASS FILTER PILLS
+================================ */
+
 .class-filter-pills {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
   background-color: #e2e8f0;
   padding: 4px;
   border-radius: 12px;
-  gap: 4px;
+  max-width: 100%;
 }
 
 .class-pill {
   background: transparent;
   border: none;
-  padding: 8px 16px;
+  padding: 9px 14px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   color: #475569;
+  white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .class-pill.active {
@@ -62,18 +94,24 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Save Button */
+/* ==============================
+   SAVE ATTENDANCE BUTTON
+================================ */
+
 .save-attendance-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: #2563eb;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 11px 18px;
+  min-height: 42px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -87,28 +125,33 @@
   cursor: not-allowed;
 }
 
-/* Stats Cards */
+/* ==============================
+   STATISTICS CARDS
+================================ */
+
 .attendance-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
 .stat-card {
+  min-width: 0;
   background: #ffffff;
   border-radius: 16px;
-  padding: 20px;
+  padding: 22px;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .stat-icon-bg {
   width: 44px;
   height: 44px;
+  flex-shrink: 0;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -136,21 +179,34 @@
   color: #2563eb;
 }
 
+.stat-info {
+  min-width: 0;
+}
+
 .stat-info h3 {
   font-size: 22px;
+  line-height: 1.35;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 2px 0;
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
 }
 
 .stat-info p {
   font-size: 12px;
+  line-height: 1.5;
   color: #64748b;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-/* Sheet Card */
+/* ==============================
+   ATTENDANCE SHEET
+================================ */
+
 .attendance-sheet-card {
+  width: 100%;
+  min-width: 0;
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
@@ -162,15 +218,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   padding-bottom: 16px;
   border-bottom: 1px solid #f1f5f9;
 }
 
 .sheet-card-header h3 {
   font-size: 16px;
+  line-height: 1.5;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .sheet-card-header h3 span {
@@ -184,6 +244,7 @@
   color: #2563eb;
   font-size: 13px;
   font-weight: 600;
+  padding: 6px 0;
   cursor: pointer;
 }
 
@@ -191,11 +252,16 @@
   text-decoration: underline;
 }
 
-/* Attendance Table */
+/* ==============================
+   ATTENDANCE LIST HEADER
+================================ */
+
 .table-header-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 16px 8px 8px 8px;
+  gap: 12px;
+  padding: 16px 8px 8px;
   font-size: 11px;
   font-weight: 700;
   color: #94a3b8;
@@ -204,35 +270,48 @@
 
 .col-student {
   flex: 1;
+  min-width: 0;
 }
 
 .col-status {
   width: 220px;
+  flex-shrink: 0;
+  text-align: center;
 }
+
+/* ==============================
+   STUDENT ROWS
+================================ */
 
 .table-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px;
-  border-bottom: 1px solid #f8fafc;
+  gap: 12px;
+  padding: 14px 8px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .table-row:last-child {
   border-bottom: none;
 }
 
-/* Student Avatar & Info */
+/* ==============================
+   STUDENT INFORMATION
+================================ */
+
 .student-info-col {
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
+  min-width: 0;
 }
 
 .student-avatar {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: #dbeafe;
   color: #1d4ed8;
@@ -246,41 +325,57 @@
 .student-details {
   display: flex;
   flex-direction: column;
+  gap: 3px;
+  min-width: 0;
 }
 
 .student-name {
   font-size: 14px;
+  line-height: 1.5;
   font-weight: 600;
   color: #1e293b;
+  overflow-wrap: anywhere;
 }
 
 .student-code {
   font-size: 11px;
+  line-height: 1.5;
   color: #94a3b8;
+  overflow-wrap: anywhere;
 }
 
-/* Status Pill Buttons */
+/* ==============================
+   STATUS BUTTONS
+================================ */
+
 .status-toggle-col {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
   width: 220px;
+  flex-shrink: 0;
 }
 
 .status-btn {
   flex: 1;
-  padding: 6px 12px;
+  min-width: 0;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
   color: #475569;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-/* Active Status Buttons */
+/* Active status buttons */
+
 .status-btn.present.active {
   background-color: #15803d;
   border-color: #15803d;
@@ -299,10 +394,220 @@
   color: #ffffff;
 }
 
+/* ==============================
+   LOADING AND EMPTY STATES
+================================ */
+
 .sheet-loading-state,
 .sheet-empty-state {
   text-align: center;
-  padding: 40px;
+  padding: 40px 24px;
   color: #64748b;
   font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ==============================
+   TABLETS AND SMALL LAPTOPS
+================================ */
+
+@media (max-width: 1100px) {
+  .attendance-page-container {
+    padding: 26px 22px;
+  }
+
+  .attendance-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+}
+
+/* ==============================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .attendance-page-container {
+    padding: 22px 18px;
+  }
+
+  .attendance-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .attendance-header-info h2 {
+    font-size: 23px;
+  }
+
+  .attendance-header-info p {
+    font-size: 13px;
+  }
+
+  .attendance-header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .class-filter-pills {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .class-pill {
+    padding: 10px 5px;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .save-attendance-btn {
+    width: 100%;
+    white-space: normal;
+  }
+
+  .attendance-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+
+  .stat-icon-bg {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .stat-info h3 {
+    font-size: 20px;
+  }
+
+  .stat-info p {
+    font-size: 11px;
+  }
+
+  .attendance-sheet-card {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .sheet-card-header {
+    align-items: flex-start;
+  }
+
+  .sheet-card-header h3 {
+    font-size: 15px;
+  }
+
+  /* Stack each student's details and status controls */
+  .table-header-row {
+    display: none;
+  }
+
+  .table-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px 4px;
+  }
+
+  .student-info-col {
+    width: 100%;
+  }
+
+  .student-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .student-name {
+    font-size: 14px;
+  }
+
+  .status-toggle-col {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .status-btn {
+    width: 100%;
+    min-height: 40px;
+    padding: 9px 5px;
+    font-size: 12px;
+  }
+
+  .sheet-loading-state,
+  .sheet-empty-state {
+    padding: 30px 16px;
+  }
+}
+
+/* ==============================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 400px) {
+  .attendance-page-container {
+    padding: 18px 12px;
+  }
+
+  .attendance-header-info h2 {
+    font-size: 21px;
+  }
+
+  .class-pill {
+    font-size: 11px;
+    padding: 9px 3px;
+  }
+
+  .attendance-stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .attendance-sheet-card {
+    padding: 16px 12px;
+  }
+
+  .sheet-card-header {
+    gap: 8px;
+  }
+
+  .mark-all-btn {
+    font-size: 12px;
+  }
+
+  .table-row {
+    padding: 15px 2px;
+  }
+
+  .status-toggle-col {
+    gap: 5px;
+  }
+
+  .status-btn {
+    font-size: 11px;
+    padding: 9px 3px;
+  }
 }

@@ -8,14 +8,13 @@ import {
   updateStaff,
 } from "../../services/teacherService";
 
-// Same function used for students: creates the login on the hidden second app
-// so your admin session stays signed in. Change the path/name if yours differs.
 import { createStudentAccount as createAccount } from "../../services/secondaryAuth";
 
 import "../admin/adminstaffs.css";
 
 const CLASSES = ["JSS1", "JSS2", "JSS3", "SSS1", "SSS2", "SSS3"];
 const TITLES = ["Mr", "Mrs", "Miss", "Ms", "Dr", "Prof", "Engr", "Pastor"];
+
 const DEPARTMENTS = [
   "Science",
   "Arts",
@@ -29,6 +28,7 @@ const DEPARTMENTS = [
   "Library",
   "Security & Maintenance",
 ];
+
 const POSITIONS = [
   "Subject Teacher",
   "Class Teacher",
@@ -42,7 +42,9 @@ const POSITIONS = [
   "Laboratory Technician",
   "Other",
 ];
+
 const EMPLOYMENT_TYPES = ["Full-time", "Part-time", "Contract", "Volunteer"];
+
 const QUALIFICATIONS = [
   "OND",
   "HND",
@@ -52,6 +54,7 @@ const QUALIFICATIONS = [
   "PhD",
   "Other",
 ];
+
 const SUBJECT_SUGGESTIONS = [
   "Mathematics",
   "English Language",
@@ -117,8 +120,6 @@ const emptyForm = {
   about: "",
 };
 
-/* ---------- Helpers ---------- */
-
 function getInitials(name = "") {
   return (
     name
@@ -134,7 +135,11 @@ function getInitials(name = "") {
 
 function avatarColor(name = "") {
   let hash = 0;
-  for (const char of name) hash = (hash + char.charCodeAt(0)) % 997;
+
+  for (const char of name) {
+    hash = (hash + char.charCodeAt(0)) % 997;
+  }
+
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];
 }
 
@@ -168,8 +173,11 @@ function getDisplayStatus(staff) {
 
 function formatDate(value) {
   if (!value) return "Not provided";
+
   const date = new Date(`${value}T00:00:00`);
+
   if (Number.isNaN(date.getTime())) return value;
+
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -179,11 +187,15 @@ function formatDate(value) {
 
 function yearsSince(value) {
   if (!value) return "";
+
   const start = new Date(`${value}T00:00:00`);
+
   if (Number.isNaN(start.getTime())) return "";
+
   const years = Math.floor(
     (Date.now() - start.getTime()) / (365.25 * 24 * 60 * 60 * 1000),
   );
+
   return years < 1
     ? "Less than a year"
     : `${years} yr${years === 1 ? "" : "s"}`;
@@ -193,12 +205,13 @@ function summarizeClasses(staff) {
   const list = Array.isArray(staff.assignedClasses)
     ? staff.assignedClasses
     : [];
-  if (list.length === 0)
+
+  if (list.length === 0) {
     return staff.staffType === "Non-teaching" ? "—" : "None assigned";
+  }
+
   return list.join(", ");
 }
-
-/* ---------- Small form pieces ---------- */
 
 function Field({ label, children, full = false }) {
   return (
@@ -214,11 +227,14 @@ function TagInput({ values, onChange, placeholder }) {
 
   function addTag(raw) {
     const value = raw.trim();
+
     if (!value) return;
+
     if (values.some((item) => item.toLowerCase() === value.toLowerCase())) {
       setText("");
       return;
     }
+
     onChange([...values, value]);
     setText("");
   }
@@ -246,19 +262,18 @@ function TagInput({ values, onChange, placeholder }) {
           </button>
         </span>
       ))}
+
       <input
         list="staff-subject-suggestions"
         value={text}
         placeholder={values.length ? "" : placeholder}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(event) => setText(event.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={() => addTag(text)}
       />
     </div>
   );
 }
-
-/* ---------- Modal ---------- */
 
 function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
   const [form, setForm] = useState(() =>
@@ -283,6 +298,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
           periodsPerWeek: staff.periodsPerWeek ?? "",
         },
   );
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -292,6 +308,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
 
   function handleChange(event) {
     const { name, value } = event.target;
+
     setForm((previous) => ({ ...previous, [name]: value }));
     setError("");
   }
@@ -299,6 +316,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
   function toggleClass(className) {
     setForm((previous) => {
       const has = previous.assignedClasses.includes(className);
+
       const assignedClasses = has
         ? previous.assignedClasses.filter((item) => item !== className)
         : [...previous.assignedClasses, className];
@@ -306,7 +324,6 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
       return {
         ...previous,
         assignedClasses,
-        // class teacher must be one of the assigned classes
         classTeacherOf: assignedClasses.includes(previous.classTeacherOf)
           ? previous.classTeacherOf
           : "",
@@ -317,10 +334,19 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!form.fullName.trim()) return setError("Please enter the full name.");
-    if (isAdd && !form.email.trim()) return setError("Email is required.");
+    if (!form.fullName.trim()) {
+      setError("Please enter the full name.");
+      return;
+    }
+
+    if (isAdd && !form.email.trim()) {
+      setError("Email is required.");
+      return;
+    }
+
     if (isAdd && form.password.length < 6) {
-      return setError("Password must be at least 6 characters.");
+      setError("Password must be at least 6 characters.");
+      return;
     }
 
     setSaving(true);
@@ -363,7 +389,10 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
         });
 
         const uid = created?.uid;
-        if (!uid) throw new Error("Account creation did not return a user ID.");
+
+        if (!uid) {
+          throw new Error("Account creation did not return a user ID.");
+        }
 
         await createStaff(uid, data);
       } else {
@@ -396,9 +425,10 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
     : staff?.subjectsTaught
       ? String(staff.subjectsTaught)
           .split(",")
-          .map((s) => s.trim())
+          .map((subject) => subject.trim())
           .filter(Boolean)
       : [];
+
   const viewClasses = Array.isArray(staff?.assignedClasses)
     ? staff.assignedClasses
     : [];
@@ -409,11 +439,17 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
         className="staff-modal"
         role="dialog"
         aria-modal="true"
-        onMouseDown={(e) => e.stopPropagation()}
+        onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="staff-modal-header">
           <h2>{title}</h2>
-          <button type="button" className="staff-icon-button" onClick={onClose}>
+
+          <button
+            type="button"
+            className="staff-icon-button"
+            aria-label="Close modal"
+            onClick={onClose}
+          >
             <FaTimes />
           </button>
         </div>
@@ -426,10 +462,12 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
               >
                 {getInitials(staff.fullName)}
               </div>
-              <div>
+
+              <div className="staff-view-name">
                 <h3>{displayName(staff)}</h3>
                 <p>{staff.staffId || staff.id}</p>
               </div>
+
               <span className={`staff-status ${getDisplayStatus(staff).tone}`}>
                 {getDisplayStatus(staff).label}
               </span>
@@ -470,11 +508,12 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
 
                 <div className="staff-view-item">
                   <span>Assigned classes</span>
+
                   {viewClasses.length ? (
                     <div className="staff-chip-row">
-                      {viewClasses.map((c) => (
-                        <span className="staff-chip static" key={c}>
-                          {c}
+                      {viewClasses.map((className) => (
+                        <span className="staff-chip static" key={className}>
+                          {className}
                         </span>
                       ))}
                     </div>
@@ -485,11 +524,12 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
 
                 <div className="staff-view-item spaced">
                   <span>Subjects taught</span>
+
                   {viewSubjects.length ? (
                     <div className="staff-chip-row">
-                      {viewSubjects.map((s) => (
-                        <span className="staff-chip static" key={s}>
-                          {s}
+                      {viewSubjects.map((subject) => (
+                        <span className="staff-chip static" key={subject}>
+                          {subject}
                         </span>
                       ))}
                     </div>
@@ -505,6 +545,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                       {staff.classTeacherOf || "Not a class teacher"}
                     </strong>
                   </div>
+
                   <div className="staff-view-item">
                     <span>Periods per week</span>
                     <strong>{staff.periodsPerWeek || "Not set"}</strong>
@@ -528,6 +569,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
               >
                 Close
               </button>
+
               <button
                 type="button"
                 className="staff-primary-button"
@@ -542,17 +584,19 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
             {error && <div className="staff-form-error">{error}</div>}
 
             <h4 className="staff-section-title first">Personal</h4>
+
             <div className="staff-form-grid">
               <Field label="Title">
                 <select name="title" value={form.title} onChange={handleChange}>
                   <option value="">Select title</option>
-                  {TITLES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {TITLES.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Full name">
                 <input
                   name="fullName"
@@ -560,6 +604,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Staff ID">
                 <input
                   name="staffId"
@@ -567,6 +612,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Email">
                 <input
                   name="email"
@@ -576,6 +622,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   disabled={!isAdd}
                 />
               </Field>
+
               {isAdd && (
                 <Field label="Temporary password">
                   <input
@@ -586,6 +633,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   />
                 </Field>
               )}
+
               <Field label="Gender">
                 <select
                   name="gender"
@@ -597,6 +645,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   <option value="female">Female</option>
                 </select>
               </Field>
+
               <Field label="Date of birth">
                 <input
                   name="dateOfBirth"
@@ -605,6 +654,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Phone number">
                 <input
                   name="phoneNumber"
@@ -612,6 +662,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Address" full>
                 <input
                   name="homeAddress"
@@ -619,6 +670,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Next of kin">
                 <input
                   name="nextOfKinName"
@@ -626,6 +678,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Next of kin phone">
                 <input
                   name="nextOfKinPhone"
@@ -636,6 +689,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
             </div>
 
             <h4 className="staff-section-title">Employment</h4>
+
             <div className="staff-form-grid">
               <Field label="Staff type">
                 <select
@@ -643,13 +697,14 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   value={form.staffType}
                   onChange={handleChange}
                 >
-                  {STAFF_TYPES.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
+                  {STAFF_TYPES.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Position">
                 <select
                   name="position"
@@ -657,13 +712,14 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 >
                   <option value="">Select position</option>
-                  {POSITIONS.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
+                  {POSITIONS.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Department">
                 <input
                   name="department"
@@ -673,19 +729,21 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   placeholder="e.g. Science"
                 />
               </Field>
+
               <Field label="Employment type">
                 <select
                   name="employmentType"
                   value={form.employmentType}
                   onChange={handleChange}
                 >
-                  {EMPLOYMENT_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {EMPLOYMENT_TYPES.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Date joined">
                 <input
                   name="dateJoined"
@@ -694,19 +752,21 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Status">
                 <select
                   name="status"
                   value={form.status}
                   onChange={handleChange}
                 >
-                  {STATUS_OPTIONS.map((s) => (
-                    <option key={s.value} value={s.value}>
-                      {s.label}
+                  {STATUS_OPTIONS.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Highest qualification">
                 <select
                   name="qualification"
@@ -714,13 +774,14 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 >
                   <option value="">Select</option>
-                  {QUALIFICATIONS.map((q) => (
-                    <option key={q} value={q}>
-                      {q}
+                  {QUALIFICATIONS.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
                     </option>
                   ))}
                 </select>
               </Field>
+
               <Field label="Certification / TRCN number">
                 <input
                   name="certification"
@@ -728,6 +789,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Reports to">
                 <input
                   name="reportingTo"
@@ -735,6 +797,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                   onChange={handleChange}
                 />
               </Field>
+
               <Field label="Office">
                 <input
                   name="office"
@@ -750,6 +813,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
 
                 <div className="staff-field">
                   <label>Assigned classes</label>
+
                   <div className="staff-chip-row">
                     {CLASSES.map((className) => (
                       <button
@@ -770,10 +834,14 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
 
                 <div className="staff-field spaced">
                   <label>Subjects taught (press Enter to add)</label>
+
                   <TagInput
                     values={form.subjectsTaught}
                     onChange={(subjectsTaught) =>
-                      setForm((previous) => ({ ...previous, subjectsTaught }))
+                      setForm((previous) => ({
+                        ...previous,
+                        subjectsTaught,
+                      }))
                     }
                     placeholder="e.g. Mathematics"
                   />
@@ -788,13 +856,14 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
                       disabled={form.assignedClasses.length === 0}
                     >
                       <option value="">Not a class teacher</option>
-                      {form.assignedClasses.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
+                      {form.assignedClasses.map((className) => (
+                        <option key={className} value={className}>
+                          {className}
                         </option>
                       ))}
                     </select>
                   </Field>
+
                   <Field label="Periods per week">
                     <input
                       name="periodsPerWeek"
@@ -809,6 +878,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
             )}
 
             <h4 className="staff-section-title">About</h4>
+
             <Field label="Short profile / notes" full>
               <textarea
                 name="about"
@@ -828,6 +898,7 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 className="staff-primary-button"
@@ -841,20 +912,19 @@ function StaffModal({ mode, staff, onClose, onSaved, onModeChange }) {
       </div>
 
       <datalist id="staff-departments">
-        {DEPARTMENTS.map((d) => (
-          <option key={d} value={d} />
+        {DEPARTMENTS.map((department) => (
+          <option key={department} value={department} />
         ))}
       </datalist>
+
       <datalist id="staff-subject-suggestions">
-        {SUBJECT_SUGGESTIONS.map((s) => (
-          <option key={s} value={s} />
+        {SUBJECT_SUGGESTIONS.map((subject) => (
+          <option key={subject} value={subject} />
         ))}
       </datalist>
     </div>
   );
 }
-
-/* ---------- Page ---------- */
 
 export default function AdminStaff() {
   const [staffList, setStaffList] = useState([]);
@@ -862,7 +932,7 @@ export default function AdminStaff() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [modal, setModal] = useState(null); // { mode, staff }
+  const [modal, setModal] = useState(null);
 
   async function loadStaff() {
     try {
@@ -881,16 +951,17 @@ export default function AdminStaff() {
   }, []);
 
   const stats = useMemo(() => {
-    const status = (s) => String(s.status || "active").toLowerCase();
-    const type = (s) => s.staffType || "Teaching";
+    const status = (staff) => String(staff.status || "active").toLowerCase();
+    const type = (staff) => staff.staffType || "Teaching";
 
     return {
       total: staffList.length,
-      active: staffList.filter((s) => status(s) === "active").length,
-      teaching: staffList.filter((s) => type(s) === "Teaching").length,
-      nonTeaching: staffList.filter((s) => type(s) === "Non-teaching").length,
-      away: staffList.filter((s) =>
-        ["onleave", "resigned", "retired", "suspended"].includes(status(s)),
+      active: staffList.filter((staff) => status(staff) === "active").length,
+      teaching: staffList.filter((staff) => type(staff) === "Teaching").length,
+      nonTeaching: staffList.filter((staff) => type(staff) === "Non-teaching")
+        .length,
+      away: staffList.filter((staff) =>
+        ["onleave", "resigned", "retired", "suspended"].includes(status(staff)),
       ).length,
     };
   }, [staffList]);
@@ -900,15 +971,16 @@ export default function AdminStaff() {
 
     return staffList
       .filter(
-        (s) =>
-          typeFilter === "all" || (s.staffType || "Teaching") === typeFilter,
+        (staff) =>
+          typeFilter === "all" ||
+          (staff.staffType || "Teaching") === typeFilter,
       )
       .filter(
-        (s) =>
+        (staff) =>
           !term ||
-          (s.fullName || "").toLowerCase().includes(term) ||
-          (s.staffId || "").toLowerCase().includes(term) ||
-          (s.department || "").toLowerCase().includes(term),
+          (staff.fullName || "").toLowerCase().includes(term) ||
+          (staff.staffId || "").toLowerCase().includes(term) ||
+          (staff.department || "").toLowerCase().includes(term),
       )
       .sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""));
   }, [staffList, search, typeFilter]);
@@ -917,7 +989,7 @@ export default function AdminStaff() {
     <main className="staff-page">
       <div className="staff-container">
         <header className="staff-header">
-          <div>
+          <div className="staff-header-copy">
             <h1>Teachers &amp; Staff</h1>
             <p>
               {stats.active.toLocaleString()} active staff members ·{" "}
@@ -929,6 +1001,7 @@ export default function AdminStaff() {
             <button type="button" className="staff-secondary-button">
               Bulk import
             </button>
+
             <button
               type="button"
               className="staff-primary-button"
@@ -945,11 +1018,13 @@ export default function AdminStaff() {
             <strong>{stats.total.toLocaleString()}</strong>
             <span>Total staff</span>
           </div>
+
           <div className="staff-stat-card">
             <div className="staff-stat-icon green" />
             <strong>{stats.teaching.toLocaleString()}</strong>
             <span>Teaching staff</span>
           </div>
+
           <div className="staff-stat-card">
             <div className="staff-stat-icon purple" />
             <strong>{stats.away.toLocaleString()}</strong>
@@ -960,12 +1035,13 @@ export default function AdminStaff() {
         <section className="staff-card">
           <div className="staff-card-heading">
             <h2>All staff</h2>
+
             <input
               className="staff-search"
               type="search"
               placeholder="Search by name, ID or department..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(event) => setSearch(event.target.value)}
             />
           </div>
 
@@ -978,7 +1054,9 @@ export default function AdminStaff() {
               <button
                 type="button"
                 key={option.value}
-                className={`staff-filter ${typeFilter === option.value ? "active" : ""}`}
+                className={`staff-filter ${
+                  typeFilter === option.value ? "active" : ""
+                }`}
                 onClick={() => setTypeFilter(option.value)}
               >
                 {option.label}
@@ -988,68 +1066,74 @@ export default function AdminStaff() {
 
           {error && <div className="staff-form-error">{error}</div>}
 
-          <div className="staff-table">
-            <div className="staff-table-row staff-table-head">
-              <span>STAFF</span>
-              <span>DEPARTMENT / POSITION</span>
-              <span>CLASSES</span>
-              <span>STATUS</span>
-              <span />
+          <div className="staff-table-wrap">
+            <div className="staff-table">
+              <div className="staff-table-row staff-table-head">
+                <span>STAFF</span>
+                <span>DEPARTMENT / POSITION</span>
+                <span>CLASSES</span>
+                <span>STATUS</span>
+                <span />
+              </div>
+
+              {loading && <div className="staff-empty">Loading staff...</div>}
+
+              {!loading && filtered.length === 0 && (
+                <div className="staff-empty">No staff found.</div>
+              )}
+
+              {filtered.map((staff) => {
+                const status = getDisplayStatus(staff);
+
+                return (
+                  <div className="staff-table-row" key={staff.id}>
+                    <div className="staff-person">
+                      <div
+                        className={`staff-avatar ${avatarColor(staff.fullName)}`}
+                      >
+                        {getInitials(staff.fullName)}
+                      </div>
+
+                      <div className="staff-person-info">
+                        <strong>{displayName(staff)}</strong>
+                        <span>{staff.staffId || staff.id}</span>
+                      </div>
+                    </div>
+
+                    <div className="staff-stack">
+                      <strong>{staff.department || "Not set"}</strong>
+                      <span>{staff.position || "Position not set"}</span>
+                    </div>
+
+                    <span className="staff-classes">
+                      {summarizeClasses(staff)}
+                    </span>
+
+                    <span className="staff-status-cell">
+                      <em className={`staff-status ${status.tone}`}>
+                        {status.label}
+                      </em>
+                    </span>
+
+                    <div className="staff-row-actions">
+                      <button
+                        type="button"
+                        onClick={() => setModal({ mode: "view", staff })}
+                      >
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setModal({ mode: "edit", staff })}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-
-            {loading && <div className="staff-empty">Loading staff...</div>}
-
-            {!loading && filtered.length === 0 && (
-              <div className="staff-empty">No staff found.</div>
-            )}
-
-            {filtered.map((staff) => {
-              const status = getDisplayStatus(staff);
-
-              return (
-                <div className="staff-table-row" key={staff.id}>
-                  <div className="staff-person">
-                    <div
-                      className={`staff-avatar ${avatarColor(staff.fullName)}`}
-                    >
-                      {getInitials(staff.fullName)}
-                    </div>
-                    <div>
-                      <strong>{displayName(staff)}</strong>
-                      <span>{staff.staffId || staff.id}</span>
-                    </div>
-                  </div>
-
-                  <div className="staff-stack">
-                    <strong>{staff.department || "Not set"}</strong>
-                    <span>{staff.position || "Position not set"}</span>
-                  </div>
-
-                  <span>{summarizeClasses(staff)}</span>
-
-                  <span>
-                    <em className={`staff-status ${status.tone}`}>
-                      {status.label}
-                    </em>
-                  </span>
-
-                  <div className="staff-row-actions">
-                    <button
-                      type="button"
-                      onClick={() => setModal({ mode: "view", staff })}
-                    >
-                      View
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setModal({ mode: "edit", staff })}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </section>
       </div>
@@ -1061,7 +1145,9 @@ export default function AdminStaff() {
           staff={modal.staff}
           onClose={() => setModal(null)}
           onSaved={loadStaff}
-          onModeChange={(mode) => setModal((prev) => ({ ...prev, mode }))}
+          onModeChange={(mode) =>
+            setModal((previous) => ({ ...previous, mode }))
+          }
         />
       )}
     </main>
